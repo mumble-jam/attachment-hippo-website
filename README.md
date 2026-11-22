@@ -1,8 +1,11 @@
 # attachmenthippo.com
 
-The marketing site for Attachment Hippo, rebuilt with [Astro](https://astro.build) as a static
-site in a Swiss / International Typographic Style: one grotesque family (Inter + Inter Tight),
-a 12-column grid, black on white, structure drawn with rules, one accent colour.
+The marketing site for Attachment Hippo, built with [Astro](https://astro.build) as a static site.
+
+**Look:** tall condensed display type (Antonio), a friendly sans for reading (Figtree) and mono
+labels (Chivo Mono). Pages are stacks of big rounded panels — pastel gradients, white, grey — on
+black, with a peach accent. Imagery is flat, outlined vector art (no photos) that moves with CSS
+and SVG animation; it all stops for visitors who prefer reduced motion.
 
 ## Run it
 
@@ -22,9 +25,11 @@ then `npm install astro@latest` when you want it.)
 src/
 ├── site.config.ts          links, email, install URL, nav, analytics IDs  ← edit here first
 ├── styles/
-│   ├── global.css          design tokens, grid, type scale, buttons
+│   ├── global.css          design tokens, panels, type scale, buttons, marquee
+│   ├── illustrations.css   the illustration animations
 │   └── article.css         blog article blocks (class contract for post bodies)
-├── components/             Header, Footer, Logo
+├── components/             Header, Footer, Logo, Illo (inline SVG), HeroScene, Marquee, Stamp
+├── illustrations/          vector icons from Figma (see "Illustrations" below)
 ├── layouts/Base.astro      <head>, SEO/OG tags, analytics, header + footer
 ├── pages/
 │   ├── index.astro         home: hero, use cases, contact
@@ -62,6 +67,18 @@ before (the email is read and stripped from the URL before analytics load).
 
 The title, date, author, reading time and cover are rendered by the template, so the body starts
 with the lead paragraph. Reading time is computed (words ÷ 220).
+
+### Illustrations
+
+The icons in `src/illustrations/` were generated with Figma's vector generator in the file
+[Attachment Hippo — icons & illustrations](https://www.figma.com/design/oEAZXMsLboi305HbV4zTNN)
+and cleaned with `scripts/import-figma-svg.py`. Each Figma layer becomes a `data-part="…"` hook
+that `src/styles/illustrations.css` animates. To add one: generate it in Figma with named layers,
+export it as SVG, run the script, then use `<Illo name="my-icon" />`.
+
+House style for new ones: chunky rounded shapes, 8 px black outline on a 256 px canvas, flat fills
+from the palette (lilac `#C9B6F2`, peach `#FFB38A`, mint `#BDEFD8`, butter `#FFE7A3`, sky `#BFE3FF`),
+no gradients or shadows.
 
 ### Logo
 

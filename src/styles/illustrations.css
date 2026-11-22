@@ -1,0 +1,240 @@
+/* =====================================================================
+   Illustration motion. Each SVG part is a <g data-part="…"> (names come
+   from the Figma layers). Loops are slow and small so they read as
+   "alive", not busy. Everything stops for prefers-reduced-motion.
+   ===================================================================== */
+
+.illo {
+  color: var(--ink);
+  overflow: visible;
+}
+.illo [data-part] {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* --- use cases --- */
+  .illo--uc-invoice.is-playing [data-part='invoice'] {
+    animation: illo-drop 3.6s var(--ease) infinite;
+  }
+  .illo--uc-invoice.is-playing [data-part='folder-front'] {
+    transform-origin: 50% 100%;
+    animation: illo-squash 3.6s var(--ease) infinite;
+  }
+
+  .illo--uc-contract.is-playing [data-part='pen'] {
+    transform-origin: 0% 100%;
+    animation: illo-sign 2.4s ease-in-out infinite;
+  }
+  .illo--uc-contract.is-playing [data-part='seal'] {
+    animation: illo-pop 2.4s var(--ease) infinite;
+  }
+
+  .illo--uc-team.is-playing [data-part^='person'] {
+    animation: illo-bob 2.4s ease-in-out infinite;
+  }
+  .illo--uc-team.is-playing [data-part='person-center'] {
+    animation-delay: -0.8s;
+  }
+  .illo--uc-team.is-playing [data-part='person-right'] {
+    animation-delay: -1.6s;
+  }
+  .illo--uc-team.is-playing [data-part='slide'] {
+    transform-origin: 50% 100%;
+    animation: illo-rise 4.8s ease-in-out infinite;
+  }
+
+  .illo--uc-photo.is-playing [data-part='cloud'] {
+    animation: illo-drift 6s ease-in-out infinite;
+  }
+  .illo--uc-photo.is-playing [data-part='arrow'] {
+    animation: illo-upload 2s ease-in-out infinite;
+  }
+  .illo--uc-photo.is-playing [data-part='sun'] {
+    animation: illo-pulse 3s ease-in-out infinite;
+  }
+  .illo--uc-photo.is-playing [data-part='photo'] {
+    animation: illo-tilt 6s ease-in-out infinite;
+  }
+
+  .illo--uc-education.is-playing [data-part='cap'] {
+    transform-origin: 50% 100%;
+    animation: illo-toss 3.2s var(--ease) infinite;
+  }
+  .illo--uc-education.is-playing [data-part='tassel'] {
+    transform-origin: 50% 0%;
+    animation: illo-swing 1.6s ease-in-out infinite;
+  }
+
+  /* --- plans: leaves sway from their base --- */
+  .illo.is-playing [data-part='left-leaf'],
+  .illo.is-playing [data-part='leaf-upper-left'],
+  .illo.is-playing [data-part='leaf-lower-left'] {
+    transform-origin: 100% 100%;
+    animation: illo-sway-l 3.2s ease-in-out infinite;
+  }
+  .illo.is-playing [data-part='right-leaf'],
+  .illo.is-playing [data-part='leaf-upper-right'],
+  .illo.is-playing [data-part='leaf-lower-right'] {
+    transform-origin: 0% 100%;
+    animation: illo-sway-r 3.2s ease-in-out infinite;
+  }
+  .illo.is-playing [data-part='leaf-lower-left'],
+  .illo.is-playing [data-part='leaf-lower-right'] {
+    animation-delay: -1.2s;
+  }
+  .illo.is-playing [data-part='bud'],
+  .illo.is-playing [data-part^='flower'] {
+    animation: illo-pulse 2.8s ease-in-out infinite;
+  }
+  .illo.is-playing [data-part='flower-right'] {
+    animation-delay: -0.9s;
+  }
+  .illo.is-playing [data-part='flower-lower'] {
+    animation-delay: -1.8s;
+  }
+  .illo.is-playing [data-part='crown'] {
+    transform-origin: 50% 100%;
+    animation: illo-breathe 4s ease-in-out infinite;
+  }
+  .illo--plan-custom.is-playing [data-part^='plant'] {
+    transform-origin: 50% 100%;
+    animation: illo-breathe 3.6s ease-in-out infinite;
+  }
+  .illo--plan-custom.is-playing [data-part='plant-peach'] {
+    animation-delay: -1.2s;
+  }
+  .illo--plan-custom.is-playing [data-part='plant-yellow'] {
+    animation-delay: -2.4s;
+  }
+
+  /* --- parts --- */
+  .illo--part-clock.is-playing [data-part='minute-hand'] {
+    transform-box: view-box;
+    transform-origin: 113px 139px;
+    animation: spin 6s linear infinite;
+  }
+  .illo--part-clock.is-playing [data-part='hour-hand'] {
+    transform-box: view-box;
+    transform-origin: 113px 139px;
+    animation: spin 72s linear infinite;
+  }
+  .illo--part-clock.is-playing [data-part='arrow'] {
+    transform-box: view-box;
+    transform-origin: 113px 139px;
+    animation: illo-nudge 3s var(--ease) infinite;
+  }
+
+  .illo--part-funnel.is-playing [data-part^='dot-top'] {
+    animation: illo-fall 2.4s ease-in infinite;
+  }
+  .illo--part-funnel.is-playing [data-part='dot-top-center'] {
+    animation-delay: -0.8s;
+  }
+  .illo--part-funnel.is-playing [data-part='dot-top-right'] {
+    animation-delay: -1.6s;
+  }
+  .illo--part-funnel.is-playing [data-part='dot-output'] {
+    animation: illo-out 2.4s ease-in infinite;
+  }
+
+  .illo--part-envelope.is-playing [data-part='letter'] {
+    animation: illo-peek 3s var(--ease) infinite;
+  }
+  .illo--part-envelope.is-playing [data-part='paperclip'] {
+    animation: illo-peek 3s var(--ease) infinite, illo-wiggle 3s ease-in-out infinite;
+  }
+}
+
+@keyframes illo-drop {
+  0%, 20% { transform: translateY(0); }
+  45%, 60% { transform: translateY(22%); }
+  85%, 100% { transform: translateY(0); }
+}
+@keyframes illo-squash {
+  0%, 38% { transform: scale(1, 1); }
+  46% { transform: scale(1.03, 0.94); }
+  56%, 100% { transform: scale(1, 1); }
+}
+@keyframes illo-sign {
+  0%, 100% { transform: rotate(0deg) translateX(0); }
+  25% { transform: rotate(-7deg) translateX(-4%); }
+  50% { transform: rotate(4deg) translateX(3%); }
+  75% { transform: rotate(-4deg) translateX(-2%); }
+}
+@keyframes illo-pop {
+  0%, 60%, 100% { transform: scale(1); }
+  70% { transform: scale(1.14) rotate(-8deg); }
+  80% { transform: scale(0.96); }
+}
+@keyframes illo-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-9%); }
+}
+@keyframes illo-rise {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6%); }
+}
+@keyframes illo-drift {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(4%); }
+}
+@keyframes illo-upload {
+  0% { transform: translateY(20%); opacity: 0; }
+  30%, 70% { opacity: 1; }
+  100% { transform: translateY(-25%); opacity: 0; }
+}
+@keyframes illo-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+@keyframes illo-tilt {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-3deg); }
+}
+@keyframes illo-toss {
+  0%, 55%, 100% { transform: translateY(0) rotate(0deg); }
+  70% { transform: translateY(-14%) rotate(-8deg); }
+  82% { transform: translateY(0) rotate(2deg); }
+}
+@keyframes illo-swing {
+  0%, 100% { transform: rotate(8deg); }
+  50% { transform: rotate(-8deg); }
+}
+@keyframes illo-sway-l {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-7deg); }
+}
+@keyframes illo-sway-r {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(7deg); }
+}
+@keyframes illo-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.04, 1.06); }
+}
+@keyframes illo-nudge {
+  0%, 50%, 100% { transform: rotate(0deg); }
+  70% { transform: rotate(28deg); }
+}
+@keyframes illo-fall {
+  0% { transform: translateY(-40%); opacity: 0; }
+  20% { opacity: 1; }
+  70% { transform: translateY(160%); opacity: 1; }
+  80%, 100% { transform: translateY(200%); opacity: 0; }
+}
+@keyframes illo-out {
+  0%, 60% { transform: translateY(-60%); opacity: 0; }
+  75% { opacity: 1; transform: translateY(0); }
+  100% { transform: translateY(20%); opacity: 0; }
+}
+@keyframes illo-peek {
+  0%, 15%, 100% { transform: translateY(0); }
+  40%, 65% { transform: translateY(-14%); }
+}
+@keyframes illo-wiggle {
+  0%, 30%, 100% { rotate: 0deg; }
+  45% { rotate: -10deg; }
+  55% { rotate: 8deg; }
+}

@@ -1,0 +1,35 @@
+---
+/**
+ * Inlines one of the vector illustrations from src/illustrations/ so its parts
+ * (data-part="…") can be animated by src/styles/illustrations.css.
+ *
+ * <Illo name="uc-invoice" />                 decorative
+ * <Illo name="plan-pro" label="Pro plan" />  meaningful image
+ */
+import '../styles/illustrations.css';
+
+const files = import.meta.glob<string>('../illustrations/*.svg', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+});
+
+interface Props {
+  name: string;
+  label?: string;
+  class?: string;
+  /** Keep the animation running even when not hovered (default true). */
+  play?: boolean;
+}
+const { name, label, class: className = '', play = true } = Astro.props;
+const raw = files[`../illustrations/${name}.svg`];
+if (!raw) throw new Error(`Unknown illustration: ${name}`);
+
+const a11y = label ? `role="img" aria-label="${label.replace(/"/g, '&quot;')}"` : 'aria-hidden="true" focusable="false"';
+const svg = raw.replace(
+  '<svg ',
+  `<svg class="illo illo--${name}${play ? ' is-playing' : ''} ${className}" ${a11y} `,
+);
+---
+
+<Fragment set:html={svg} />

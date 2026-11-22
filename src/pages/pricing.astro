@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import Illo from '../components/Illo.astro';
 import { site } from '../site.config';
 
 const check = 'M3 8.5l3.2 3L13 4.5';
@@ -15,218 +16,224 @@ const check = 'M3 8.5l3.2 3L13 4.5';
     <script is:inline src="/js/pricing.js"></script>
   </Fragment>
 
-  <section class="wrap pricing" aria-labelledby="pricing-title">
-    <div class="grid page-head">
-      <span class="label"><span class="accent">Plans</span></span>
-      <h1 id="pricing-title" class="display">Pricing</h1>
+  <section class="sheet sheet--lilac sheet--tight intro" aria-labelledby="pricing-title">
+    <div class="wrap intro-grid">
+      <h1 id="pricing-title" class="h2 intro-title">Pricing</h1>
+      <p class="lead intro-text">Start free. Upgrade when your inbox does.</p>
     </div>
+  </section>
 
-    <div class="plans">
-      <!-- Beginner -->
-      <article class="plan" aria-labelledby="plan-beginner">
-        <header class="plan-head">
-          <span class="plan-index num">01</span>
+  <section class="sheet sheet--grey plans-sheet" aria-label="Plans">
+    <div class="wrap">
+      <div class="plans">
+        <!-- Beginner -->
+        <article class="plan" aria-labelledby="plan-beginner" data-reveal>
+          <div class="plan-art sheet--mint"><Illo name="plan-beginner" class="plan-illo" /></div>
+          <div class="meta-row mono"><span>Plan 01</span><span>Forever</span></div>
           <h2 id="plan-beginner" class="plan-name">Beginner</h2>
-        </header>
-        <p class="plan-price"><span class="price-amount">Free</span></p>
-        <div class="plan-note"></div>
-        <a class="btn btn--line btn--block" href={site.installUrl} target="_blank" rel="noopener noreferrer">
-          Get started <span class="arrow" aria-hidden="true">→</span>
-        </a>
-        <ul class="features" role="list">
-          {
-            [
-              'Google Drive integration',
-              'Automatic attachment saving',
-              'Up to 2 automation rules',
-              'Up to 10 attachments per month',
-              'Custom file name',
-              'Daily processing',
-              'Email support',
-            ].map((f) => (
-              <li>
-                <svg viewBox="0 0 16 16" aria-hidden="true"><path d={check} /></svg>
-                <span>{f}</span>
-              </li>
-            ))
-          }
-        </ul>
-      </article>
+          <p class="plan-price"><span class="price-amount">Free</span></p>
+          <div class="plan-note"></div>
+          <a class="btn btn--white btn--lg btn--block" href={site.installUrl} target="_blank" rel="noopener noreferrer">
+            Get started <span class="arrow" aria-hidden="true">→</span>
+          </a>
+          <ul class="features" role="list">
+            {
+              [
+                'Google Drive integration',
+                'Automatic attachment saving',
+                'Up to 2 automation rules',
+                'Up to 10 attachments per month',
+                'Custom file name',
+                'Daily processing',
+                'Email support',
+              ].map((f) => (
+                <li>
+                  <svg viewBox="0 0 16 16" aria-hidden="true"><path d={check} /></svg>
+                  <span>{f}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </article>
 
-      <!-- Essential -->
-      <article class="plan" aria-labelledby="plan-essential">
-        <header class="plan-head">
-          <span class="plan-index num">02</span>
+        <!-- Essential -->
+        <article class="plan" aria-labelledby="plan-essential" data-reveal>
+          <div class="plan-art sheet--sky"><Illo name="plan-essential" class="plan-illo" /></div>
+          <div class="meta-row mono"><span>Plan 02</span><span>Annual only</span></div>
           <h2 id="plan-essential" class="plan-name">Essential</h2>
-        </header>
-        <p class="plan-price">
-          <span class="price-amount">$23.88</span> <span class="price-period">($1.99/mo)</span>
-        </p>
-        <div class="plan-note"><span class="tag">Annual only</span></div>
-        <button
-          id="essential-checkout-button"
-          type="button"
-          class="btn btn--line btn--block paddle_button cta-button"
-          data-items='[{"priceId":"pri_01jjevdqjqnxdyt62xxh64ztfm","quantity":1}]'
-        >
-          Get started <span class="arrow" aria-hidden="true">→</span>
-        </button>
-        <ul class="features" role="list">
-          <li><svg viewBox="0 0 16 16" aria-hidden="true"><path d={check} /></svg><span>Up to <strong>5</strong> automation rules</span></li>
-          <li><svg viewBox="0 0 16 16" aria-hidden="true"><path d={check} /></svg><span>Up to <strong>100</strong> attachments per month</span></li>
-          <li><svg viewBox="0 0 16 16" aria-hidden="true"><path d={check} /></svg><span>Processing every <strong>3 hours</strong></span></li>
-        </ul>
-      </article>
+          <p class="plan-price">
+            <span class="price-amount">$23.88</span> <span class="price-period">($1.99/mo)</span>
+          </p>
+          <div class="plan-note"></div>
+          <button
+            id="essential-checkout-button"
+            type="button"
+            class="btn btn--white btn--lg btn--block paddle_button cta-button"
+            data-items='[{"priceId":"pri_01jjevdqjqnxdyt62xxh64ztfm","quantity":1}]'
+          >
+            Get started <span class="arrow" aria-hidden="true">→</span>
+          </button>
+          <ul class="features" role="list">
+            <li><svg viewBox="0 0 16 16" aria-hidden="true"><path d={check} /></svg><span>Up to <strong>5</strong> automation rules</span></li>
+            <li><svg viewBox="0 0 16 16" aria-hidden="true"><path d={check} /></svg><span>Up to <strong>100</strong> attachments per month</span></li>
+            <li><svg viewBox="0 0 16 16" aria-hidden="true"><path d={check} /></svg><span>Processing every <strong>3 hours</strong></span></li>
+          </ul>
+        </article>
 
-      <!-- Pro -->
-      <article class="plan plan--featured" aria-labelledby="plan-pro">
-        <header class="plan-head">
-          <span class="plan-index num">03</span>
+        <!-- Pro -->
+        <article class="plan plan--featured" aria-labelledby="plan-pro" data-reveal>
+          <div class="plan-art sheet--butter">
+            <Illo name="plan-pro" class="plan-illo" />
+            <span class="badge">Most popular</span>
+          </div>
+          <div class="meta-row mono"><span>Plan 03</span><span>Annual or monthly</span></div>
           <h2 id="plan-pro" class="plan-name">Pro</h2>
-          <span class="tag tag--accent">Most popular</span>
-        </header>
-        <p class="plan-price" id="pro-price" aria-live="polite">
-          <span class="price-amount">$59.88</span> <span class="price-period">($4.99/mo)</span>
-        </p>
-        <div class="plan-note">
-          <fieldset class="billing">
-            <legend class="visually-hidden">Billing period</legend>
-            <label><input type="radio" name="pro-billing" value="annual" checked /><span>Annual (Save 55%)</span></label>
-            <label><input type="radio" name="pro-billing" value="monthly" /><span>Monthly</span></label>
-          </fieldset>
-        </div>
-        <button
-          id="pro-checkout-button"
-          type="button"
-          class="btn btn--accent btn--block paddle_button cta-button"
-          data-items='[{"priceId":"pri_01kjfswp1vfxyb9z44rdygmj7e","quantity":1}]'
-        >
-          Get started <span class="arrow" aria-hidden="true">→</span>
-        </button>
-        <ul class="features" role="list">
-          <li><svg viewBox="0 0 16 16" aria-hidden="true"><path d={check} /></svg><span>Up to <strong>10</strong> automation rules</span></li>
-          <li><svg viewBox="0 0 16 16" aria-hidden="true"><path d={check} /></svg><span>Up to <strong>3000</strong> attachments per month</span></li>
-          <li><svg viewBox="0 0 16 16" aria-hidden="true"><path d={check} /></svg><span>Processing every <strong>1 hour</strong></span></li>
-        </ul>
-      </article>
-    </div>
-
-    <!-- Custom -->
-    <div class="grid custom">
-      <div class="custom-head">
-        <span class="plan-index num">04</span>
-        <h2 class="h2 custom-title">Custom</h2>
+          <p class="plan-price" id="pro-price" aria-live="polite">
+            <span class="price-amount">$59.88</span> <span class="price-period">($4.99/mo)</span>
+          </p>
+          <div class="plan-note">
+            <fieldset class="billing">
+              <legend class="visually-hidden">Billing period</legend>
+              <label><input type="radio" name="pro-billing" value="annual" checked /><span>Annual (Save 55%)</span></label>
+              <label><input type="radio" name="pro-billing" value="monthly" /><span>Monthly</span></label>
+            </fieldset>
+          </div>
+          <button
+            id="pro-checkout-button"
+            type="button"
+            class="btn btn--lg btn--block paddle_button cta-button"
+            data-items='[{"priceId":"pri_01kjfswp1vfxyb9z44rdygmj7e","quantity":1}]'
+          >
+            Get started <span class="arrow" aria-hidden="true">→</span>
+          </button>
+          <ul class="features" role="list">
+            <li><svg viewBox="0 0 16 16" aria-hidden="true"><path d={check} /></svg><span>Up to <strong>10</strong> automation rules</span></li>
+            <li><svg viewBox="0 0 16 16" aria-hidden="true"><path d={check} /></svg><span>Up to <strong>3000</strong> attachments per month</span></li>
+            <li><svg viewBox="0 0 16 16" aria-hidden="true"><path d={check} /></svg><span>Processing every <strong>1 hour</strong></span></li>
+          </ul>
+        </article>
       </div>
-      <p class="lead custom-text">For teams that need custom limits, domain-wide licensing, retrospective downloads.</p>
-      <a class="btn btn--ink custom-btn" href="/#contact">Contact us <span class="arrow" aria-hidden="true">→</span></a>
+
+      <!-- Custom -->
+      <div class="custom" data-reveal>
+        <div class="custom-art"><Illo name="plan-custom" class="plan-illo" /></div>
+        <div class="custom-body">
+          <div class="meta-row mono"><span>Plan 04</span><span>Teams</span></div>
+          <h2 class="plan-name">Custom</h2>
+          <p class="lead">For teams that need custom limits, domain-wide licensing, retrospective downloads.</p>
+        </div>
+        <a class="btn btn--ink btn--lg custom-btn" href="/#contact">Contact us <span class="arrow" aria-hidden="true">→</span></a>
+      </div>
     </div>
   </section>
 </Base>
 
 <style>
-  .pricing {
-    padding-block: clamp(2.5rem, 1rem + 5vw, 6rem) var(--section);
+  .intro-grid {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem 2rem;
   }
-  .page-head {
-    row-gap: var(--s-2);
-    margin-bottom: clamp(3rem, 2rem + 4vw, 6rem);
+  .intro-title {
+    font-size: clamp(5rem, 2rem + 12vw, 13rem);
+    line-height: 0.85;
   }
-  .page-head .label {
-    grid-column: 1 / -1;
-  }
-  .page-head h1 {
-    grid-column: 1 / -1;
-  }
-  .accent {
-    color: var(--accent);
+  .intro-text {
+    max-width: 20ch;
+    font-size: clamp(1.5rem, 1rem + 1.4vw, 2.25rem);
+    font-family: var(--font-display);
+    line-height: 1.05;
   }
 
-  /* plans — three ruled columns */
+  .plans-sheet {
+    padding-top: clamp(1.5rem, 1rem + 2vw, 3rem);
+  }
   .plans {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    border-top: var(--rule-ink);
+    gap: var(--gutter);
+    align-items: start;
   }
   .plan {
-    display: grid;
-    grid-template-rows: auto auto 3.5rem auto 1fr;
-    align-content: start;
-    padding: var(--s-3) var(--s-4) var(--s-4);
-  }
-  .plan:first-child {
-    padding-left: 0;
-  }
-  .plan:last-child {
-    padding-right: 0;
-  }
-  .plan + .plan {
-    border-left: var(--rule-hair);
-  }
-  .plan-head {
     display: flex;
-    align-items: baseline;
-    gap: var(--s-2);
-    flex-wrap: wrap;
+    flex-direction: column;
+    padding: 0.75rem 0.75rem 1.75rem;
+    background: var(--paper);
+    border-radius: calc(var(--r-card) + 0.5rem);
   }
-  .plan-index {
-    font-size: var(--fs-s);
-    font-weight: 600;
-    color: var(--accent);
+  .plan > :not(.plan-art) {
+    margin-inline: 0.75rem;
+  }
+  .plan-art {
+    position: relative;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 16 / 10;
+    border-radius: var(--r-card);
+    margin-bottom: 1.25rem;
+  }
+  .plan-art :global(.plan-illo) {
+    width: 42%;
+  }
+  .badge {
+    position: absolute;
+    top: 0.875rem;
+    right: 0.875rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    background: var(--peach);
+    font-size: 0.8125rem;
+    font-weight: 700;
   }
   .plan-name {
+    margin-top: 0.875rem;
     font-family: var(--font-display);
-    font-size: var(--fs-xl);
-    font-weight: 600;
-    letter-spacing: -0.02em;
-  }
-  .plan-head .tag {
-    margin-left: auto;
+    font-size: clamp(3rem, 2rem + 2.6vw, 4.5rem);
+    font-weight: 500;
+    line-height: 0.9;
   }
   .plan-price {
-    margin-top: var(--s-6);
     display: flex;
-    align-items: baseline;
     flex-wrap: wrap;
-    gap: 0.25rem 0.625rem;
+    align-items: baseline;
+    gap: 0.25rem 0.5rem;
+    margin-top: 1rem;
   }
   .plan-price :global(.price-amount) {
     font-family: var(--font-display);
-    font-size: clamp(3rem, 2rem + 3vw, 4.75rem);
-    font-weight: 600;
-    letter-spacing: -0.045em;
-    line-height: 0.9;
-    font-variant-numeric: tabular-nums;
+    font-size: clamp(2.25rem, 1.8rem + 1.2vw, 3rem);
+    font-weight: 500;
+    line-height: 1;
   }
   .plan-price :global(.price-period) {
-    font-size: var(--fs-m);
     color: var(--ink-3);
+    font-size: var(--fs-s);
   }
   .plan-note {
     display: flex;
     align-items: center;
+    min-height: 3.5rem;
   }
-  .tag {
-    display: inline-block;
-    padding: 0.2rem 0.5rem;
-    font-size: var(--fs-xs);
-    font-weight: 600;
-    letter-spacing: var(--track-label);
-    text-transform: uppercase;
-    border: 1px solid var(--ink);
-    line-height: 1.4;
+  .plan .btn--block {
+    width: auto;
   }
-  .tag--accent {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: var(--on-accent);
+  .plan .btn--white {
+    background: var(--grey);
+  }
+  .plan .btn--white:hover {
+    background: var(--ink);
   }
 
-  /* annual / monthly */
   .billing {
     display: inline-flex;
+    gap: 0.25rem;
     margin: 0;
-    padding: 0;
-    border: 1px solid var(--ink);
+    padding: 0.25rem;
+    border: 0;
+    border-radius: 999px;
+    background: var(--grey);
   }
   .billing label {
     position: relative;
@@ -234,44 +241,41 @@ const check = 'M3 8.5l3.2 3L13 4.5';
   }
   .billing input {
     position: absolute;
-    opacity: 0;
     inset: 0;
+    opacity: 0;
     margin: 0;
     cursor: pointer;
   }
   .billing span {
     display: block;
-    padding: 0.3rem 0.625rem;
-    font-size: var(--fs-xs);
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    transition: background-color 150ms var(--ease), color 150ms var(--ease);
+    padding: 0.375rem 0.875rem;
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    transition: background-color 200ms var(--ease), color 200ms var(--ease);
   }
   .billing input:checked + span {
     background: var(--ink);
     color: var(--paper);
   }
   .billing input:focus-visible + span {
-    outline: 2px solid var(--accent);
+    outline: 2px solid var(--ink);
     outline-offset: 2px;
   }
 
   .features {
-    margin-top: var(--s-4);
-    border-top: 1px solid var(--ink);
+    margin-top: 1.5rem;
   }
   .features li {
     display: flex;
     gap: 0.75rem;
     align-items: baseline;
-    padding-block: 0.75rem;
-    border-bottom: var(--rule-hair);
-    font-size: var(--fs-body);
-    color: var(--ink-2);
+    padding-block: 0.625rem;
+    border-top: 1px solid var(--line);
+    font-size: var(--fs-s);
   }
   .features strong {
-    color: var(--ink);
-    font-weight: 700;
+    font-weight: 800;
   }
   .features svg {
     flex: none;
@@ -279,58 +283,61 @@ const check = 'M3 8.5l3.2 3L13 4.5';
     height: 0.875rem;
     transform: translateY(0.1em);
     fill: none;
-    stroke: var(--accent);
-    stroke-width: 2;
+    stroke: var(--ink);
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
 
-  /* custom row */
   .custom {
-    margin-top: var(--s-12);
-    padding-top: var(--s-3);
-    border-top: var(--rule-ink);
-    row-gap: var(--s-3);
-    align-items: baseline;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 1.5rem clamp(1.5rem, 1rem + 2vw, 3rem);
+    align-items: center;
+    margin-top: var(--gutter);
+    padding: 0.75rem clamp(1.25rem, 1rem + 1vw, 2rem) 0.75rem 0.75rem;
+    background: var(--paper);
+    border-radius: calc(var(--r-card) + 0.5rem);
   }
-  .custom-head {
-    grid-column: 1 / span 4;
-    display: flex;
-    align-items: baseline;
-    gap: var(--s-2);
+  .custom-art {
+    display: grid;
+    place-items: center;
+    width: clamp(9rem, 6rem + 8vw, 15rem);
+    aspect-ratio: 1;
+    border-radius: var(--r-card);
+    background: var(--g-lilac);
   }
-  .custom-text {
-    grid-column: 5 / span 5;
-    max-width: 34ch;
+  .custom-art :global(.plan-illo) {
+    width: 62%;
   }
-  .custom-btn {
-    grid-column: 10 / -1;
-    justify-self: end;
-    align-self: start;
+  .custom-body .plan-name {
+    margin-top: 0.75rem;
+  }
+  .custom-body .lead {
+    margin-top: 0.75rem;
+    max-width: 36ch;
   }
 
-  @media (max-width: 960px) {
+  @media (max-width: 1100px) {
+    .plans {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+  }
+  @media (max-width: 720px) {
     .plans {
       grid-template-columns: minmax(0, 1fr);
-      border-top: 0;
     }
-    .plan,
-    .plan:first-child,
-    .plan:last-child {
-      padding: var(--s-3) 0 var(--s-8);
-      border-top: var(--rule-ink);
-      border-left: 0 !important;
-      grid-template-rows: auto;
+    .custom {
+      grid-template-columns: minmax(0, 1fr);
+      padding: 0.75rem 0.75rem 1.75rem;
     }
-    .plan-price {
-      margin-top: var(--s-4);
+    .custom-art {
+      width: 100%;
+      aspect-ratio: 16 / 10;
     }
-    .plan-note {
-      min-height: 3.5rem;
-    }
-    .custom-head,
-    .custom-text,
+    .custom-body,
     .custom-btn {
-      grid-column: 1 / -1;
-      justify-self: start;
+      margin-inline: 0.75rem;
     }
   }
 </style>

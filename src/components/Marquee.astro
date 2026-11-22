@@ -1,0 +1,28 @@
+---
+/** Black band with an endless row of words (duplicated once for a seamless loop). */
+interface Props {
+  items: string[];
+  label?: string;
+}
+const { items, label } = Astro.props;
+const star = 'M12 0C13 7 17 11 24 12C17 13 13 17 12 24C11 17 7 13 0 12C7 11 11 7 12 0Z';
+---
+
+<div class="marquee" role={label ? 'region' : undefined} aria-label={label}>
+  <div class="marquee-track">
+    {
+      [0, 1].map((copy) => (
+        <ul class="marquee-group" role="list" aria-hidden={copy === 1 ? 'true' : undefined}>
+          {items.map((item) => (
+            <li class="marquee-cell">
+              <span class="marquee-item">{item}</span>
+              <svg class="marquee-star" viewBox="0 0 24 24" aria-hidden="true">
+                <path d={star} fill="currentColor" />
+              </svg>
+            </li>
+          ))}
+        </ul>
+      ))
+    }
+  </div>
+</div>

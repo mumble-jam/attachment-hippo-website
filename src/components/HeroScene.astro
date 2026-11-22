@@ -1,0 +1,204 @@
+---
+/**
+ * Animated hero: attachments leave the Gmail envelope, arc over the hippo
+ * and land in the Drive folder. Parts come from src/illustrations (Figma-
+ * generated), the hippo from brand/tools/mark.json. Files travel with SVG
+ * <animateMotion>; everything else is CSS.
+ */
+import mark from '../../brand/tools/mark.json';
+import '../styles/illustrations.css';
+
+const parts = import.meta.glob<string>('../illustrations/*.svg', { query: '?raw', import: 'default', eager: true });
+const inner = (name: string) => parts[`../illustrations/${name}.svg`].replace(/^<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '');
+
+// Eye + nostril, enlarged a little for the outlined illustration style.
+const nums = [...mark.features.matchAll(/M([\d.]+) ([\d.]+)a([\d.]+) ([\d.]+) ([\d.]+)/g)].map((m) => m.slice(1).map(Number));
+const [ex, ey, er] = nums[0];
+const eye = { cx: ex + er, cy: ey, r: er * 1.45 };
+const [nx, ny, nrx, nry, nrot] = nums[1];
+const rad = (nrot * Math.PI) / 180;
+const nostril = { cx: nx + nrx * Math.cos(rad), cy: ny + nrx * Math.sin(rad), rx: nrx * 1.35, ry: nry * 1.35, rot: nrot };
+
+const files = [
+  { fill: '#FFB38A', begin: '0s' },
+  { fill: '#BDEFD8', begin: '1.5s' },
+  { fill: '#BFE3FF', begin: '3s' },
+];
+const stars = [
+  { x: 330, y: 92, s: 1, d: '0s' },
+  { x: 610, y: 40, s: 0.7, d: '-1s' },
+  { x: 880, y: 84, s: 0.85, d: '-2s' },
+];
+---
+
+<figure class="scene" aria-label="Attachments travel from Gmail to a Google Drive folder automatically">
+  <svg class="scene-svg" viewBox="0 0 1200 440" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <!-- ground -->
+    <path d="M0 418H1200" stroke="currentColor" stroke-width="3" stroke-dasharray="2 14" stroke-linecap="round" opacity="0.5"></path>
+
+    <!-- route -->
+    <path id="route" d="M150 220C360 -10 840 -10 1050 232" stroke="currentColor" stroke-width="3" stroke-dasharray="10 12" stroke-linecap="round" opacity="0.35"></path>
+
+    <!-- sparkles -->
+    {
+      stars.map((st) => (
+        <g transform={`translate(${st.x} ${st.y}) scale(${st.s})`}>
+          <path
+            class="scene-star"
+            style={`animation-delay:${st.d}`}
+            d="M0 -22C3 -6 6 -3 22 0C6 3 3 6 0 22C-3 6 -6 3 -22 0C-6 -3 -3 -6 0 -22Z"
+            fill="#FFAB7B"
+            stroke="currentColor"
+            stroke-width="5"
+            stroke-linejoin="round"
+          ></path>
+        </g>
+      ))
+    }
+
+    <!-- Gmail envelope -->
+    <svg class="illo illo--part-envelope scene-envelope" x="30" y="166" width="250" height="250" viewBox="0 0 256 256" set:html={inner('part-envelope')} />
+
+    <!-- Drive folder -->
+    <svg class="illo illo--part-folder scene-folder" x="920" y="166" width="250" height="250" viewBox="0 0 256 256" set:html={inner('part-folder')} />
+
+    <!-- the hippo -->
+    <g class="scene-hippo-pos" transform="translate(420 212) scale(0.36)">
+      <g class="scene-hippo">
+        <path d={mark.body} fill="#C9B6F2" stroke="currentColor" stroke-width="22" stroke-linejoin="round"></path>
+        <circle cx={eye.cx} cy={eye.cy} r={eye.r} fill="currentColor"></circle>
+        <ellipse cx={nostril.cx} cy={nostril.cy} rx={nostril.rx} ry={nostril.ry} transform={`rotate(${nostril.rot} ${nostril.cx} ${nostril.cy})`} fill="currentColor"></ellipse>
+      </g>
+    </g>
+
+    <!-- flying attachments -->
+    {
+      files.map((f) => (
+        <g class="scene-file" opacity="0">
+          <g class="scene-file-body">
+            <path d="M-26 -34H12L28 -18V30C28 33 26 35 23 35H-26C-29 35 -31 33 -31 30V-29C-31 -32 -29 -34 -26 -34Z" fill={f.fill} stroke="currentColor" stroke-width="6" stroke-linejoin="round"></path>
+            <path d="M12 -34V-18H28" stroke="currentColor" stroke-width="6" stroke-linejoin="round"></path>
+            <path d="M-19 -6H14M-19 8H8M-19 22H12" stroke="currentColor" stroke-width="6" stroke-linecap="round"></path>
+          </g>
+          <animateMotion dur="4.5s" begin={f.begin} repeatCount="indefinite" calcMode="spline" keyTimes="0;1" keyPoints="0;1" keySplines="0.45 0 0.55 1">
+            <mpath href="#route"></mpath>
+          </animateMotion>
+          <animate attributeName="opacity" dur="4.5s" begin={f.begin} repeatCount="indefinite" values="0;1;1;0" keyTimes="0;0.1;0.9;1"></animate>
+        </g>
+      ))
+    }
+  </svg>
+
+  <figcaption class="scene-labels">
+    <span><span class="mono">Gmail™</span><span class="muted">Your inbox</span></span>
+    <span><span class="mono">Drive™</span><span class="muted">Your folder</span></span>
+  </figcaption>
+</figure>
+
+<style>
+  .scene {
+    position: relative;
+    color: var(--ink);
+  }
+  .scene-svg {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  .scene-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.75rem;
+    padding-inline: 2.5%;
+  }
+  .scene-labels > span {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    font-size: var(--fs-s);
+  }
+  .scene-labels > span:last-child {
+    text-align: right;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .scene-hippo {
+      transform-box: fill-box;
+      transform-origin: 50% 100%;
+      animation: hippo-walk 0.75s ease-in-out infinite alternate;
+    }
+    .scene-file-body {
+      animation: file-spin 4.5s ease-in-out infinite;
+    }
+    .scene-star {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: twinkle 3s ease-in-out infinite;
+    }
+    /* the envelope lets go of a file and the folder catches one every 1.5s */
+    .scene-envelope :global([data-part='letter']),
+    .scene-envelope :global([data-part='paperclip']) {
+      animation: env-peek 1.5s var(--ease) infinite !important;
+    }
+    .scene-folder :global([data-part='folder-front']) {
+      transform-box: fill-box;
+      transform-origin: 50% 100%;
+      animation: folder-catch 1.5s var(--ease) infinite;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .scene-file {
+      display: none;
+    }
+  }
+
+  @keyframes hippo-walk {
+    from {
+      transform: translateY(0) rotate(-1deg);
+    }
+    to {
+      transform: translateY(-3%) rotate(1.2deg);
+    }
+  }
+  @keyframes file-spin {
+    0% {
+      transform: rotate(-12deg) scale(0.8);
+    }
+    50% {
+      transform: rotate(8deg) scale(1.1);
+    }
+    100% {
+      transform: rotate(-4deg) scale(0.85);
+    }
+  }
+  @keyframes twinkle {
+    0%,
+    100% {
+      transform: scale(0.6) rotate(0deg);
+      opacity: 0.6;
+    }
+    50% {
+      transform: scale(1.1) rotate(45deg);
+      opacity: 1;
+    }
+  }
+  @keyframes env-peek {
+    0% {
+      transform: translateY(-16%);
+    }
+    30%,
+    100% {
+      transform: translateY(0);
+    }
+  }
+  @keyframes folder-catch {
+    0%,
+    4% {
+      transform: scale(1.05, 0.9);
+    }
+    25%,
+    100% {
+      transform: scale(1, 1);
+    }
+  }
+</style>

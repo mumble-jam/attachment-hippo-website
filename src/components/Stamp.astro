@@ -1,0 +1,19 @@
+---
+/** Round peach badge with circling mono text — a call to action. */
+interface Props {
+  href: string;
+  label: string;
+  ring: string;
+  external?: boolean;
+}
+const { href, label, ring, external = false } = Astro.props;
+const id = `ring-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<a class="stamp" href={href} {...external ? { target: '_blank', rel: 'noopener noreferrer' } : {}}>
+  <svg class="stamp-ring" viewBox="0 0 100 100" aria-hidden="true">
+    <defs><path id={id} d="M50 50m-41 0a41 41 0 1 1 82 0a41 41 0 1 1 -82 0"></path></defs>
+    <text><textPath href={`#${id}`} textLength="254" lengthAdjust="spacing">{ring}</textPath></text>
+  </svg>
+  <span class="stamp-label" set:html={label} />
+</a>

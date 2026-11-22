@@ -7,49 +7,42 @@ const years = year > site.startYear ? `${site.startYear}–${year}` : `${site.st
 ---
 
 <footer class="site-footer">
-  <div class="wrap">
-    <div class="grid cols">
-      <div class="col brand">
-        <Logo width={72} class="footer-mark" />
-        <p class="tagline">Save Gmail™ attachments to Drive™ automatically.</p>
-      </div>
-
-      <nav class="col" aria-label="Site">
-        <span class="label label--muted">Site</span>
-        <ul role="list">
-          {site.nav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
-        </ul>
-      </nav>
-
-      <nav class="col" aria-label="Legal">
-        <span class="label label--muted">Legal</span>
-        <ul role="list">
-          {site.legal.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
-        </ul>
-      </nav>
-
-      <div class="col">
-        <span class="label label--muted">Contact</span>
-        <ul role="list">
-          <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
-          <li>
-            <a href={site.installUrl} target="_blank" rel="noopener noreferrer">Google Workspace Marketplace ↗</a>
-          </li>
-        </ul>
-      </div>
+  <div class="wrap grid">
+    <div class="word" aria-hidden="true">
+      <Logo width={120} class="word-mark" />
+      <span>Hippo</span>
     </div>
 
-    <div class="baseline">
-      <p class="copyright" data-start-year={site.startYear}>All rights reserved {years}</p>
-      <p class="muted">Gmail™ and Google Drive™ are trademarks of Google LLC.</p>
-    </div>
+    <div class="side">
+      <a class="mail" href={`mailto:${site.email}`}>{site.email}</a>
 
-    <p class="wordmark" aria-hidden="true">Attachment Hippo</p>
+      <div class="cols">
+        <nav aria-label="Site">
+          <ul role="list">
+            <li><a href="/">Home</a></li>
+            {site.nav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+          </ul>
+        </nav>
+        <nav aria-label="Legal">
+          <ul role="list">
+            {site.legal.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+            <li>
+              <a href={site.installUrl} target="_blank" rel="noopener noreferrer">Google Workspace Marketplace ↗</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="base">
+        <p class="copyright" data-start-year={site.startYear}>All rights reserved {years}</p>
+        <p>Gmail™ and Google Drive™ are trademarks of Google LLC.</p>
+      </div>
+    </div>
   </div>
 </footer>
 
 <script>
-  // Keep the copyright range current between deploys (same as the old copyright.js).
+  // Keep the copyright range current between deploys.
   document.querySelectorAll<HTMLElement>('[data-start-year]').forEach((el) => {
     const start = Number(el.dataset.startYear);
     const now = new Date().getFullYear();
@@ -59,73 +52,80 @@ const years = year > site.startYear ? `${site.startYear}–${year}` : `${site.st
 
 <style>
   .site-footer {
-    border-top: 1px solid var(--ink);
-    padding-top: var(--s-8);
-    overflow: hidden;
+    margin-top: 0.5rem;
+    background: var(--paper);
+    border-radius: var(--r-sheet) var(--r-sheet) 0 0;
+    padding-block: clamp(3rem, 2rem + 4vw, 6rem) 2rem;
   }
-  .cols {
-    row-gap: var(--s-6);
+  .grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 3rem var(--gutter);
+    align-items: start;
   }
-  .col {
-    grid-column: span 3;
-  }
-  .brand {
-    display: flex;
-    flex-direction: column;
-    gap: var(--s-2);
-  }
-  .tagline {
+  .word {
+    position: relative;
     font-family: var(--font-display);
-    font-size: var(--fs-l);
+    font-size: clamp(6rem, 1rem + 17vw, 17rem);
     font-weight: 600;
-    line-height: 1.15;
-    letter-spacing: -0.015em;
-    max-width: 16ch;
-  }
-  .col .label {
-    padding-bottom: var(--s-1);
-    margin-bottom: var(--s-1);
-    border-bottom: var(--rule-hair);
-  }
-  .col li a {
-    display: inline-block;
-    padding-block: 0.3rem;
-    font-size: var(--fs-s);
-    text-decoration: none;
-  }
-  .col li a:hover {
-    color: var(--accent);
-  }
-  .baseline {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: var(--s-1) var(--s-4);
-    margin-top: var(--s-8);
-    padding-block: var(--s-2);
-    border-top: var(--rule-hair);
-    font-size: var(--fs-xs);
-  }
-  .wordmark {
-    font-family: var(--font-display);
-    font-weight: 700;
-    /* sized so the line spans the content width exactly (text is ~7.53em wide) */
-    font-size: calc((min(100vw, var(--max)) - 2 * var(--margin)) / 7.7);
     line-height: 0.8;
-    letter-spacing: -0.055em;
-    white-space: nowrap;
-    margin-left: -0.04em;
-    margin-bottom: -0.06em;
+    letter-spacing: -0.02em;
     user-select: none;
   }
-  @media (max-width: 960px) {
-    .col {
-      grid-column: span 6;
-    }
+  .word :global(.word-mark) {
+    width: 0.62em;
+    height: auto;
+    color: var(--lavender);
+    margin-bottom: 0.06em;
   }
-  @media (max-width: 520px) {
-    .col {
-      grid-column: 1 / -1;
+  .mail {
+    display: inline-block;
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 0.8rem + 2.6vw, 3.5rem);
+    font-weight: 500;
+    line-height: 1.05;
+    text-decoration: none;
+    background: linear-gradient(var(--peach), var(--peach)) 0 100% / 100% 0.14em no-repeat;
+    overflow-wrap: anywhere;
+    transition: background-size 300ms var(--ease);
+  }
+  .mail:hover {
+    background-size: 100% 100%;
+  }
+  .cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gutter);
+    margin-top: 2.5rem;
+  }
+  .cols ul {
+    border-top: 1px solid var(--line);
+    padding-top: 1rem;
+  }
+  .cols a {
+    display: inline-block;
+    padding-block: 0.25rem;
+    font-size: var(--fs-s);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .cols a:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  .base {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-top: 2.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
+    font-size: 0.8125rem;
+    color: var(--ink-3);
+  }
+  @media (max-width: 899px) {
+    .grid {
+      grid-template-columns: minmax(0, 1fr);
     }
   }
 </style>

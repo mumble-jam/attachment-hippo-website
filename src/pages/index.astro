@@ -1,29 +1,53 @@
 ---
 import Base from '../layouts/Base.astro';
-import Logo from '../components/Logo.astro';
+import HeroScene from '../components/HeroScene.astro';
+import Illo from '../components/Illo.astro';
+import Marquee from '../components/Marquee.astro';
+import Stamp from '../components/Stamp.astro';
 import { site } from '../site.config';
 
 const useCases = [
   {
+    icon: 'uc-invoice',
+    tint: 'mint',
+    who: 'Small businesses & freelancers',
     title: 'Automated invoice and report archiving',
     text: 'Automatically save invoices and financial reports from Gmail™ to Google Drive™. Perfect for small businesses and freelancers who need organized, accessible records for billing, audits, or tax prep.',
   },
   {
+    icon: 'uc-contract',
+    tint: 'lilac',
+    who: 'Lawyers & legal teams',
     title: 'Contract management',
     text: 'Simplify contract management by auto-saving signed agreements and legal documents from Gmail™ to Google Drive™. Ideal for lawyers, contractors, and legal teams.',
   },
   {
+    icon: 'uc-team',
+    tint: 'butter',
+    who: 'Teams',
     title: 'Team collaboration',
     text: 'Keep teams aligned by automatically storing email attachments — like docs and presentations — in shared Google Drive™ folders. Ensure everyone works from the latest version.',
   },
   {
+    icon: 'uc-photo',
+    tint: 'sky',
+    who: 'Product & event photos',
     title: 'Automatic photo backup',
     text: 'Auto-save images from Gmail™ to Google Drive™. Great for backing up product shots, event photos, or visual assets without manual downloads.',
   },
   {
+    icon: 'uc-education',
+    tint: 'lilac',
+    who: 'Students & teachers',
     title: 'Organization of educational resources',
     text: 'Automatically store class materials, notes, and research papers from Gmail™ to Google Drive™. Built for students, teachers, and academic professionals who need quick access and structure.',
   },
+];
+
+const plans = [
+  { icon: 'plan-beginner', name: 'Beginner', price: 'Free', note: '', points: ['Up to 2 automation rules', 'Up to 10 attachments per month', 'Daily processing'] },
+  { icon: 'plan-essential', name: 'Essential', price: '$1.99', note: '/mo, billed annually', points: ['Up to 5 automation rules', 'Up to 100 attachments per month', 'Processing every 3 hours'] },
+  { icon: 'plan-pro', name: 'Pro', price: '$4.99', note: '/mo, billed annually', points: ['Up to 10 automation rules', 'Up to 3000 attachments per month', 'Processing every 1 hour'] },
 ];
 
 const jsonLd = [
@@ -38,13 +62,7 @@ const jsonLd = [
     installUrl: site.installUrl,
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
   },
-  {
-    '@context': 'https://schema.org',
-    '@type': 'Organization',
-    name: site.name,
-    url: site.url,
-    email: site.email,
-  },
+  { '@context': 'https://schema.org', '@type': 'Organization', name: site.name, url: site.url, email: site.email },
 ];
 ---
 
@@ -55,89 +73,110 @@ const jsonLd = [
   jsonLd={jsonLd}
 >
   <!-- ============ HERO ============ -->
-  <section class="hero wrap" aria-labelledby="hero-title">
-    <div class="grid hero-top">
-      <span class="label">Gmail™ → Google Drive™</span>
-      <span class="label label--muted hero-kicker">Attachment Hippo</span>
-    </div>
-
-    <h1 id="hero-title" class="display hero-title">
-      Save <b>Gmail<span class="tm">™</span></b> attachments to <b>Drive<span class="tm">™</span></b> automatically
-    </h1>
-
-    <div class="grid hero-foot">
-      <p class="lead hero-lead">
+  <section class="sheet sheet--mint hero" aria-labelledby="hero-title">
+    <div class="wrap">
+      <h1 id="hero-title" class="display hero-title">
+        Save Gmail<span class="tm">™</span> attachments to Drive<span class="tm">™</span> automatically
+      </h1>
+      <p class="lead hero-sub">
         Save your time and be sure that your attachments from Gmail™ are saved automatically in the Drive™ folder.
       </p>
-      <div class="hero-actions">
-        <a class="btn btn--accent" href={site.installUrl} target="_blank" rel="noopener noreferrer">
-          {site.installLabel}
-          <span class="arrow" aria-hidden="true">→</span>
-        </a>
-        <a class="btn btn--line" href="/pricing.html">
-          See pricing
-          <span class="arrow" aria-hidden="true">→</span>
-        </a>
+
+      <div class="hero-line">
+        <span class="mono hero-tag">Gmail™ add-on</span>
+        <Stamp href={site.installUrl} external label="Add to<br>Gmail™" ring="It’s free · It’s free · It’s free ·" />
+        <span class="mono hero-tag hero-tag--end">Free to start</span>
+      </div>
+
+      <div class="hero-scene" data-reveal>
+        <HeroScene />
       </div>
     </div>
-
-    <!-- Schematic: inbox → rule → folder -->
-    <figure class="flow" aria-label="Attachments travel from Gmail to a Google Drive folder automatically">
-      <div class="flow-node">
-        <span class="label label--muted">From</span>
-        <span class="flow-name">Gmail<span class="tm">™</span></span>
-        <span class="flow-meta">Inbox · attachments</span>
-      </div>
-      <div class="flow-line" aria-hidden="true">
-        <span class="flow-rail"></span>
-        <span class="flow-hippo"><Logo width={64} /></span>
-        <span class="flow-head"></span>
-      </div>
-      <div class="flow-node flow-node--end">
-        <span class="label label--muted">To</span>
-        <span class="flow-name">Drive<span class="tm">™</span></span>
-        <span class="flow-meta">Folder · automatically</span>
-      </div>
-    </figure>
   </section>
 
-  <!-- ============ USE CASES ============ -->
-  <section id="use-cases" class="section wrap" aria-labelledby="use-cases-title">
-    <div class="grid section-head">
-      <span class="label"><span class="accent num">01</span></span>
-      <h2 id="use-cases-title" class="h2">Use cases</h2>
-    </div>
+  <Marquee items={['Invoices', 'Reports', 'Contracts', 'Presentations', 'Photos', 'Class notes', 'Research papers']} />
 
-    <ol class="cases" role="list">
-      {
-        useCases.map((item, i) => (
-          <li class="grid case">
-            <span class="case-num num" aria-hidden="true">
-              {String(i + 1).padStart(2, '0')}
-            </span>
-            <h3 class="h3 case-title">{item.title}</h3>
-            <p class="case-text">{item.text}</p>
-          </li>
-        ))
-      }
-    </ol>
+  <!-- ============ USE CASES ============ -->
+  <section id="use-cases" class="sheet" aria-labelledby="use-cases-title">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="use-cases-title" class="h2">Use cases</h2>
+        <span class="side">01—05</span>
+      </div>
+
+      <ol class="cases" role="list">
+        {
+          useCases.map((uc, i) => (
+            <li class="case" data-reveal>
+              <div class={`case-art sheet--${uc.tint}`}>
+                <Illo name={uc.icon} class="case-illo" />
+              </div>
+              <div class="meta-row mono">
+                <span>Use case {String(i + 1).padStart(2, '0')}</span>
+                <span>{uc.who}</span>
+              </div>
+              <h3 class="h3 case-title">{uc.title}</h3>
+              <p class="case-text">{uc.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ PRICING PREVIEW ============ -->
+  <section class="sheet sheet--butter" aria-labelledby="plans-title">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="plans-title" class="h2">Pricing</h2>
+        <span class="side">Grows with you</span>
+      </div>
+
+      <ul class="plans" role="list">
+        {
+          plans.map((p) => (
+            <li class="plan" data-reveal>
+              <div class="plan-main">
+                <Illo name={p.icon} class="plan-illo" />
+                <div>
+                  <h3 class="plan-name">{p.name}</h3>
+                  <p class="plan-price">
+                    <span class="num">{p.price}</span>
+                    {p.note && <span class="muted">{p.note}</span>}
+                  </p>
+                </div>
+              </div>
+              <ul class="plan-points" role="list">
+                {p.points.map((pt) => (
+                  <li>{pt}</li>
+                ))}
+              </ul>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="plans-foot">
+        <a class="btn btn--ink btn--lg" href="/pricing.html">See all plans <span class="arrow" aria-hidden="true">→</span></a>
+      </div>
+    </div>
   </section>
 
   <!-- ============ CONTACT ============ -->
-  <section id="contact" class="section wrap contact" aria-labelledby="contact-title">
-    <div class="grid section-head">
-      <span class="label"><span class="accent num">02</span></span>
-      <h2 id="contact-title" class="h2">Contact us</h2>
-    </div>
+  <section id="contact" class="sheet sheet--lilac" aria-labelledby="contact-title">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="contact-title" class="h2">Contact us</h2>
+        <span class="side">Say hi</span>
+      </div>
 
-    <div class="grid">
-      <p class="lead contact-text">
-        We’d love to hear from you! Drop us a line and we’ll get back to you as soon as possible.
-      </p>
-      <a class="contact-mail" href={`mailto:${site.email}`}>
-        <span>{site.email}</span>
-        <span class="arrow" aria-hidden="true">↗</span>
-      </a>
+      <div class="contact">
+        <Illo name="part-envelope" class="contact-illo" />
+        <div>
+          <p class="lead contact-text">We’d love to hear from you! Drop us a line and we’ll get back to you as soon as possible.</p>
+          <a class="contact-mail" href={`mailto:${site.email}`}>{site.email}</a>
+        </div>
+      </div>
     </div>
   </section>
 </Base>
@@ -145,265 +184,193 @@ const jsonLd = [
 <style>
   /* ---------- hero ---------- */
   .hero {
-    padding-top: clamp(2.5rem, 1rem + 5vw, 6rem);
-  }
-  .hero-top {
-    padding-bottom: var(--s-3);
-  }
-  .hero-top .label:first-child {
-    grid-column: 1 / span 6;
-  }
-  .hero-kicker {
-    grid-column: 7 / -1;
-    justify-self: end;
+    padding-top: clamp(3.5rem, 2rem + 6vw, 8rem);
+    padding-bottom: clamp(2rem, 1rem + 3vw, 4rem);
+    text-align: center;
   }
   .hero-title {
-    max-width: 14ch;
-    font-size: clamp(2.75rem, 1rem + 6.4vw, 7.5rem);
+    max-width: 24ch;
+    margin-inline: auto;
+    font-size: clamp(3.25rem, 1rem + 7vw, 7.5rem);
   }
-  .hero-title :global(.tm),
-  .flow-name :global(.tm) {
-    font-size: 0.42em;
-    font-weight: 500;
-    vertical-align: 0.95em;
-    letter-spacing: 0;
-    margin-left: 0.04em;
+  .hero-sub {
+    max-width: 30rem;
+    margin: 1.75rem auto 0;
   }
-  .hero-foot {
-    margin-top: clamp(2.5rem, 1.5rem + 4vw, 5rem);
-    padding-top: var(--s-2);
-    border-top: var(--rule-ink);
-    row-gap: var(--s-4);
-    align-items: start;
-  }
-  .hero-lead {
-    grid-column: 4 / span 5;
-    max-width: 30ch;
-  }
-  .hero-actions {
-    grid-column: 9 / -1;
-    display: flex;
-    flex-direction: column;
-    gap: var(--s-1);
-  }
-
-  /* flow schematic */
-  .flow {
-    display: grid;
-    grid-template-columns: minmax(0, 3fr) minmax(0, 6fr) minmax(0, 3fr);
-    column-gap: var(--gutter);
-    align-items: end;
-    margin-top: var(--s-12);
-    padding-block: var(--s-3);
-    border-top: var(--rule-hair);
-    border-bottom: var(--rule-hair);
-  }
-  .flow-node {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-  .flow-node--end {
-    text-align: right;
-    align-items: flex-end;
-  }
-  .flow-name {
-    font-family: var(--font-display);
-    font-size: var(--fs-2xl);
-    font-weight: 700;
-    letter-spacing: -0.035em;
-    line-height: 1;
-  }
-  .flow-meta {
-    font-size: var(--fs-s);
-    color: var(--ink-3);
-  }
-  .flow-line {
+  .hero-line {
     position: relative;
-    height: 3.25rem;
-    align-self: center;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    margin-top: clamp(2.5rem, 1.5rem + 3vw, 4rem);
   }
-  .flow-rail {
+  .hero-line::before {
+    content: '';
     position: absolute;
     left: 0;
-    right: 0.25rem;
-    top: 50%;
-    height: 2px;
-    background: repeating-linear-gradient(90deg, var(--ink) 0 10px, transparent 10px 16px);
-  }
-  .flow-head {
-    position: absolute;
     right: 0;
     top: 50%;
-    width: 0.875rem;
-    height: 0.875rem;
-    border-top: 2px solid var(--ink);
-    border-right: 2px solid var(--ink);
-    transform: translateY(-50%) rotate(45deg);
+    height: 1px;
+    background: var(--line-strong);
   }
-  .flow-hippo :global(svg) {
-    width: clamp(2.75rem, 2rem + 2vw, 4rem);
-    height: auto;
+  .hero-line > :global(*) {
+    position: relative;
   }
-  .flow-hippo {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    color: var(--lavender);
-    background: var(--paper);
-    padding-inline: 0.5rem;
-    transform: translate(0, -60%);
-    animation: trot 7s var(--ease) infinite;
+  .hero-tag {
+    justify-self: start;
+    transform: translateY(-1.4rem);
   }
-  @keyframes trot {
-    0% {
-      left: 0%;
-      opacity: 0;
-    }
-    8% {
-      opacity: 1;
-    }
-    80% {
-      left: calc(100% - 5rem);
-      opacity: 1;
-    }
-    92%,
-    100% {
-      left: calc(100% - 5rem);
-      opacity: 0;
-    }
+  .hero-tag--end {
+    justify-self: end;
   }
-  @media (prefers-reduced-motion: reduce) {
-    .flow-hippo {
-      animation: none;
-      left: 50%;
-      transform: translate(-50%, -60%);
-    }
+  .hero-scene {
+    max-width: 68rem;
+    margin: clamp(1.5rem, 1rem + 2vw, 3rem) auto 0;
+    text-align: left;
   }
 
   /* ---------- use cases ---------- */
-  .accent {
-    color: var(--accent);
+  .cases {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(3rem, 2rem + 3vw, 5rem) var(--gutter);
   }
-  .case {
-    border-top: 1px solid var(--ink);
-    padding-block: var(--s-3) var(--s-4);
-    row-gap: var(--s-2);
-    align-items: baseline;
+  .case:nth-child(even) {
+    margin-top: clamp(0rem, -2rem + 10vw, 8rem);
   }
-  .case:last-child {
-    border-bottom: 1px solid var(--ink);
+  .case-art {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--r-card);
+    margin-bottom: 1.25rem;
+    overflow: hidden;
   }
-  .case-num {
-    grid-column: 1 / span 3;
-    font-size: var(--fs-xl);
-    font-weight: 500;
-    color: var(--accent);
-    line-height: 1;
+  .case-art :global(.case-illo) {
+    width: 46%;
+    transition: transform 600ms var(--ease);
+  }
+  .case:hover .case-art :global(.case-illo) {
+    transform: scale(1.08) rotate(-2deg);
   }
   .case-title {
-    grid-column: 4 / span 4;
+    margin-top: 0.875rem;
+    max-width: 16ch;
   }
   .case-text {
-    grid-column: 8 / -1;
-    font-size: var(--fs-body);
+    margin-top: 0.875rem;
+    max-width: 40ch;
     color: var(--ink-2);
-    max-width: 46ch;
   }
-  .case {
-    transition: background-color 200ms var(--ease);
+
+  /* ---------- plans ---------- */
+  .plans {
+    border-bottom: 1px solid var(--line);
+  }
+  .plan {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 1.5rem var(--gutter);
+    align-items: center;
+    padding-block: clamp(1.5rem, 1rem + 1.5vw, 2.5rem);
+    border-top: 1px solid var(--line);
+  }
+  .plan-main {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 0.5rem + 2vw, 2.5rem);
+  }
+  .plan-main :global(.plan-illo) {
+    width: clamp(5.5rem, 4rem + 5vw, 9rem);
+    flex: none;
+  }
+  .plan-name {
+    font-family: var(--font-display);
+    font-size: clamp(3.5rem, 2rem + 5vw, 7rem);
+    font-weight: 500;
+    line-height: 0.9;
+  }
+  .plan-price {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-top: 0.875rem;
+    font-size: var(--fs-s);
+  }
+  .plan-price .num {
+    font-family: var(--font-display);
+    font-size: var(--fs-h3);
+    font-weight: 500;
+    line-height: 1;
+  }
+  .plan-points li {
+    font-family: var(--font-display);
+    font-size: clamp(1.375rem, 1.1rem + 0.9vw, 2rem);
+    font-weight: 400;
+    line-height: 1.15;
+    padding-block: 0.75rem;
+    border-top: 1px solid var(--line);
+  }
+  .plan-points li:first-child {
+    border-top: 0;
+  }
+  .plans-foot {
+    display: flex;
+    justify-content: center;
+    margin-top: clamp(2.5rem, 2rem + 2vw, 4rem);
   }
 
   /* ---------- contact ---------- */
   .contact {
-    padding-bottom: var(--section);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    gap: 2rem var(--gutter);
+    align-items: center;
+  }
+  .contact :global(.contact-illo) {
+    width: min(100%, 18rem);
   }
   .contact-text {
-    grid-column: 4 / span 6;
-    max-width: 34ch;
-    margin-bottom: var(--s-6);
+    max-width: 30ch;
   }
   .contact-mail {
-    grid-column: 4 / -1;
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: var(--s-2);
-    padding-block: var(--s-2);
-    border-top: 1px solid var(--ink);
-    border-bottom: 1px solid var(--ink);
+    display: inline-block;
+    margin-top: 1.5rem;
     font-family: var(--font-display);
-    font-size: clamp(1.5rem, 0.8rem + 3.6vw, 4.5rem);
-    font-weight: 600;
-    letter-spacing: -0.04em;
+    font-size: clamp(1.75rem, 0.6rem + 4vw, 4.25rem);
+    font-weight: 500;
     line-height: 1.05;
     text-decoration: none;
     overflow-wrap: anywhere;
-    transition: color 150ms var(--ease);
+    background: linear-gradient(var(--peach), var(--peach)) 0 100% / 100% 0.14em no-repeat;
+    transition: background-size 300ms var(--ease);
   }
   .contact-mail:hover {
-    color: var(--accent);
-  }
-  .contact-mail .arrow {
-    flex: none;
-    transition: transform 200ms var(--ease);
-  }
-  .contact-mail:hover .arrow {
-    transform: translate(4px, -4px);
+    background-size: 100% 100%;
   }
 
-  /* ---------- responsive ---------- */
-  @media (max-width: 960px) {
-    .hero-lead {
-      grid-column: 1 / span 7;
-    }
-    .hero-actions {
-      grid-column: 8 / -1;
-    }
-    .case-num {
-      grid-column: 1 / span 2;
-    }
-    .case-title {
-      grid-column: 3 / -1;
-    }
-    .case-text {
-      grid-column: 3 / -1;
-    }
-    .contact-text,
-    .contact-mail {
-      grid-column: 1 / -1;
-    }
-  }
-  @media (max-width: 640px) {
-    .hero-kicker {
+  @media (max-width: 760px) {
+    .hero-tag {
       display: none;
     }
-    .hero-lead,
-    .hero-actions {
-      grid-column: 1 / -1;
+    .hero-line {
+      grid-template-columns: 1fr;
+      justify-items: center;
     }
-    .hero-actions .btn {
-      width: 100%;
+    .cases {
+      grid-template-columns: minmax(0, 1fr);
     }
-    .flow {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      row-gap: var(--s-3);
+    .case:nth-child(even) {
+      margin-top: 0;
     }
-    .flow-line {
-      grid-column: 1 / -1;
-      grid-row: 2;
+    .plan {
+      grid-template-columns: minmax(0, 1fr);
     }
-    .flow-node--end {
-      grid-row: 1;
-      grid-column: 2;
+    .contact {
+      grid-template-columns: minmax(0, 1fr);
     }
-    .case-num {
-      grid-column: 1 / -1;
-      font-size: var(--fs-m);
-    }
-    .case-title,
-    .case-text {
-      grid-column: 1 / -1;
+    .contact :global(.contact-illo) {
+      width: 10rem;
     }
   }
 </style>
