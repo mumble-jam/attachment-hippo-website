@@ -26,3 +26,6 @@ pnpm-debug.log*
 # python
 .venv/
 __pycache__/
+
+# packaged zips for sharing
+release/
