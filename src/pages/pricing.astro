@@ -32,7 +32,6 @@ const check = 'M3 8.5l3.2 3L13 4.5';
           <div class="meta-row mono"><span>Plan 01</span><span>Forever</span></div>
           <h2 id="plan-beginner" class="plan-name">Beginner</h2>
           <p class="plan-price"><span class="price-amount">Free</span></p>
-          <div class="plan-note"></div>
           <a class="btn btn--white btn--lg btn--block" href={site.installUrl} target="_blank" rel="noopener noreferrer">
             Get started <span class="arrow" aria-hidden="true">→</span>
           </a>
@@ -64,7 +63,6 @@ const check = 'M3 8.5l3.2 3L13 4.5';
           <p class="plan-price">
             <span class="price-amount">$23.88</span> <span class="price-period">($1.99/mo)</span>
           </p>
-          <div class="plan-note"></div>
           <button
             id="essential-checkout-button"
             type="button"
@@ -87,17 +85,17 @@ const check = 'M3 8.5l3.2 3L13 4.5';
             <span class="badge">Most popular</span>
           </div>
           <div class="meta-row mono"><span>Plan 03</span><span>Annual or monthly</span></div>
-          <h2 id="plan-pro" class="plan-name">Pro</h2>
-          <p class="plan-price" id="pro-price" aria-live="polite">
-            <span class="price-amount">$59.88</span> <span class="price-period">($4.99/mo)</span>
-          </p>
-          <div class="plan-note">
+          <div class="plan-head">
+            <h2 id="plan-pro" class="plan-name">Pro</h2>
             <fieldset class="billing">
               <legend class="visually-hidden">Billing period</legend>
               <label><input type="radio" name="pro-billing" value="annual" checked /><span>Annual (Save 55%)</span></label>
               <label><input type="radio" name="pro-billing" value="monthly" /><span>Monthly</span></label>
             </fieldset>
           </div>
+          <p class="plan-price" id="pro-price" aria-live="polite">
+            <span class="price-amount">$59.88</span> <span class="price-period">($4.99/mo)</span>
+          </p>
           <button
             id="pro-checkout-button"
             type="button"
@@ -211,13 +209,39 @@ const check = 'M3 8.5l3.2 3L13 4.5';
     color: var(--ink-3);
     font-size: var(--fs-s);
   }
-  .plan-note {
+  /* title on the left, Annual/Monthly switch in the top-right corner */
+  .plan-head {
     display: flex;
     align-items: center;
-    min-height: 3.5rem;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem 1rem;
+    margin-top: 0.875rem;
+  }
+  .plan-head .plan-name {
+    margin-top: 0;
+  }
+  @media (max-width: 480px) {
+    /* keep the switch beside "Pro" on phones */
+    .plan-head {
+      flex-wrap: nowrap;
+      gap: 0.5rem;
+    }
+    .plan-head .billing span {
+      padding: 0.3rem 0.55rem;
+      font-size: 0.75rem;
+      white-space: nowrap;
+    }
+  }
+  @media (max-width: 359px) {
+    /* the very smallest phones: let it drop under the title */
+    .plan-head {
+      flex-wrap: wrap;
+    }
   }
   .plan .btn--block {
     width: auto;
+    margin-top: 1.5rem;
   }
   .plan .btn--white {
     background: var(--grey);
