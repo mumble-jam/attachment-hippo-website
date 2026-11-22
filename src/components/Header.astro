@@ -1,8 +1,9 @@
 ---
 import Logo from './Logo.astro';
 import { site } from '../site.config';
+import { publicPath } from '../lib/paths';
 
-const path = Astro.url.pathname.replace(/index\.html$/, '');
+const path = publicPath(Astro.url.pathname);
 const isCurrent = (href: string) =>
   !href.includes('#') && (path === href || (href !== '/' && path.startsWith(href.replace(/\.html$/, ''))));
 ---

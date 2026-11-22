@@ -3,8 +3,13 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
 // https://docs.astro.build/en/reference/configuration-reference/
+// Preview builds for GitHub Pages live under a sub-path (SITE_BASE=/repo-name/).
+// The normal build (attachmenthippo.com) leaves it unset.
+const base = process.env.SITE_BASE || '/';
+
 export default defineConfig({
   site: 'https://attachmenthippo.com',
+  base,
   // `preserve` keeps the old URLs working: src/pages/pricing.astro → /pricing.html,
   // src/pages/blog/index.astro → /blog/. The Gmail add-on links to
   // /pricing.html?plan=…#email=…, so that URL must not change.

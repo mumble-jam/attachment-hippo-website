@@ -91,7 +91,7 @@ How it is built:
 
 To add one: generate it in Figma with named layers (any flat style — only the shapes are used),
 export as SVG, run the import script, add a recipe, use `<AuraIcon name="…" />`. Preview every
-illustration at `/lab/aura/` (not linked, not in the sitemap).
+illustration at `/lab/aura.html` (not linked, not in the sitemap).
 
 ### Colour themes
 
@@ -117,6 +117,18 @@ the pricing page's Custom plan) puts the topic in the subject line.
 
 `src/components/Logo.astro` draws the mark from `brand/tools/mark.json`, so regenerating the
 brand kit updates the site too.
+
+## Preview on GitHub Pages
+
+Every push to `main` publishes a preview to GitHub Pages
+(`.github/workflows/pages.yml`) at `https://<owner>.github.io/<repo>/`. The preview is built with
+`SITE_BASE=/<repo>/` and `PUBLIC_PREVIEW=1`: links get the sub-path (`scripts/rebase.mjs`), search
+engines are told not to index it, and analytics are off. To build the same thing locally:
+
+```bash
+SITE_BASE=/attachment-hippo-website/ PUBLIC_PREVIEW=1 npm run build
+node scripts/rebase.mjs dist /attachment-hippo-website
+```
 
 ## Deploy
 

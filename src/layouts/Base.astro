@@ -4,6 +4,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ThemeSwitcher from '../components/ThemeSwitcher.astro';
 import { themeCss } from '../lib/themes';
+import { publicPath } from '../lib/paths';
 import { site } from '../site.config';
 
 interface Props {
@@ -30,7 +31,10 @@ const {
   noindex = false,
 } = Astro.props;
 
-const canonical = new URL(Astro.url.pathname.replace(/index\.html$/, ''), Astro.site);
+/** Preview build (GitHub Pages): not indexed, no analytics. */
+const preview = import.meta.env.PUBLIC_PREVIEW === '1';
+// canonical always points at the real page on the real site (also from the preview)
+const canonical = new URL(publicPath(Astro.url.pathname), Astro.site);
 const imageUrl = new URL(image, Astro.site);
 const ldBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 const { umamiWebsiteId, gaMeasurementId } = site.analytics;
@@ -47,7 +51,7 @@ const { umamiWebsiteId, gaMeasurementId } = site.analytics;
     <meta name="description" content={description} />
     {keywords && <meta name="keywords" content={keywords} />}
     <link rel="canonical" href={canonical} />
-    {noindex && <meta name="robots" content="noindex" />}
+    {(noindex || preview) && <meta name="robots" content={preview ? 'noindex, nofollow' : 'noindex'} />}
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
@@ -69,7 +73,7 @@ const { umamiWebsiteId, gaMeasurementId } = site.analytics;
     <slot name="head" />
 
     {
-      import.meta.env.PROD && (
+      import.meta.env.PROD && !preview && (
         <>
           <script is:inline defer src="https://cloud.umami.is/script.js" data-website-id={umamiWebsiteId} />
           <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`} />

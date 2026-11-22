@@ -63,7 +63,7 @@ firebase deploy --only hosting --project YOUR_FIREBASE_PROJECT_ID
    worth one test purchase flow after deploying.
 4. **Analytics** (Umami + Google Analytics) are included in this production build with the
    existing IDs.
-5. `/lab/aura/` is an internal preview page of the illustrations — not linked anywhere and hidden
+5. `/lab/aura.html` is an internal preview page of the illustrations — not linked anywhere and hidden
    from search engines. Delete `src/pages/lab/` and rebuild if you don't want it online.
 
 ## After deploying — quick check
