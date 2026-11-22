@@ -1,0 +1,222 @@
+<p class="post-lead">
+    Part 1 left the ticket sitting in the backlog: "Save [Client] email attachments to shared Drive folder." No architecture, no requirements doc — just a shared inbox, a sales rep who's tired of checking it, and a sprint that was already full.
+</p>
+
+<nav class="post-toc">
+    <span class="post-toc-label">In this article</span>
+    <ol>
+        <li><a href="#what-it-means">What "search the inbox for specific emails" actually means</a></li>
+        <li><a href="#build-it">Building it yourself: a minimal Apps Script version</a></li>
+        <li><a href="#think-twice">Why teams often don't stop there</a></li>
+        <li><a href="#tools">Ready-made tools, compared</a></li>
+        <li><a href="#which-fits">Which option actually fits</a></li>
+    </ol>
+</nav>
+
+<p>
+    Whoever picks that ticket up quickly discovers it splits into two separate problems. Reading a file out of Google Drive is a solved problem — clean API, predictable structure. Reliably finding the right email in an inbox that receives everything from client reports to newsletter spam is the actually hard part. Email wasn't built to be a trigger for anything, so "search the inbox for specific emails" ends up being the real engineering task, and "save it to Drive" is just the easy last step once you've found it.
+</p>
+
+<h2 id="what-it-means">What "search the inbox for specific emails" actually means</h2>
+
+<p>
+    In practice, a search that's reliable enough to run unattended needs to narrow on more than one signal at once, because any single filter is too loose:
+</p>
+
+<ul>
+    <li><strong>Sender</strong> — only trust attachments from an address (or domain) the client actually uses.</li>
+    <li><strong>Subject line or label</strong> — clients often reuse a consistent subject format ("Weekly Report — [Client Name]") or you can ask them to apply a Gmail label.</li>
+    <li><strong>Attachment type</strong> — restrict to <code>.xlsx</code>, <code>.csv</code>, <code>.xls</code> so you're not pulling in signature-image PDFs.</li>
+    <li><strong>Recency</strong> — only look at messages newer than the last successful run, so you're not reprocessing the same file every hour.</li>
+</ul>
+
+<p>
+    Gmail's own search syntax already supports all of this — the same operators you'd type into the Gmail search bar (<code>from:</code>, <code>subject:</code>, <code>has:attachment</code>, <code>filename:</code>, <code>newer_than:</code>) work identically through the Gmail API and Google Apps Script's <code>GmailApp.search()</code> method.
+</p>
+
+<h2 id="build-it">Building it yourself: a minimal Apps Script version</h2>
+
+<p>
+    For a single client, or a first prototype, this is genuinely a small script. Google Apps Script avoids standing up any infrastructure — it runs on Google's servers on a schedule you set.
+</p>
+
+<pre><code>function saveClientAttachmentsToDrive() {
+  // Narrow the search: right sender, has an attachment,
+  // spreadsheet file types only, only messages since the last run.
+  const query = 'from:reports@clientdomain.com has:attachment '
+    + '(filename:xlsx OR filename:csv OR filename:xls) newer_than:1d';
+
+  const folder = DriveApp.getFolderById('YOUR_DRIVE_FOLDER_ID');
+  const threads = GmailApp.search(query);
+
+  threads.forEach(thread => {
+    thread.getMessages().forEach(message => {
+      message.getAttachments().forEach(attachment => {
+        folder.createFile(attachment);
+      });
+    });
+  });
+}</code></pre>
+
+<p>
+    Wire that to a time-driven trigger (Apps Script → Triggers → time-based, hourly or daily) and the inbox-watching job that used to belong to a sales rep now runs itself.
+</p>
+
+<h2 id="think-twice">Why teams often don't stop there — and why they should think twice before they don't</h2>
+
+<p>
+    This is exactly where Part 1 left off: the script works for one client, then a second client sends a slightly different format, then a third. Each new client either means a new branch of <code>if</code> statements or a near-duplicate script — and now there are several small automations that can each break quietly, with nobody but the engineer who wrote them able to debug a failure at 2am.
+</p>
+
+<div class="callout callout--note">
+    <p class="callout-title">Note</p>
+    <p>None of that is a reason not to build the first version yourself — it's a reason to be honest about when a script stops being "a quick fix" and starts being "a system nobody signed up to maintain." That's the point where it's worth comparing what you'd build against what already exists.</p>
+</div>
+
+<h2 id="tools">Ready-made tools, compared</h2>
+
+<p>
+    Not every version of this problem needs an engineer. If you're a sales or ops person trying to solve this yourself, the question isn't "which tool is most powerful" — it's "which one can I set up today without filing a ticket." The six options below span the full range, from click-and-configure add-ons to code you maintain yourself. Pricing and feature limits are pulled from each vendor's own site as of August 2026 and are worth double-checking before you commit.
+</p>
+
+<div class="table-wrap">
+    <table>
+        <thead>
+            <tr>
+                <th>Tool</th>
+                <th>What it does</th>
+                <th>Launched from</th>
+                <th>Setup effort</th>
+                <th>Fully automated on free tier?</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><a href="https://attachmenthippo.com" target="_blank" rel="noopener noreferrer">Attachment Hippo</a></td>
+                <td>Gmail add-on that saves matching attachments to Drive, based on sender, subject, or label rules</td>
+                <td>Gmail</td>
+                <td>Easy</td>
+                <td>Yes</td>
+            </tr>
+            <tr>
+                <td><a href="https://digitalinspiration.com" target="_blank" rel="noopener noreferrer">Save Emails and Attachments</a></td>
+                <td>Google Sheets add-on that saves matching emails and attachments to Drive, with an activity log kept in the sheet</td>
+                <td>Google Sheets</td>
+                <td>Easy</td>
+                <td>No</td>
+            </tr>
+            <tr>
+                <td><a href="https://zapier.com" target="_blank" rel="noopener noreferrer">Zapier</a></td>
+                <td>No-code platform for connecting Gmail to Drive through a workflow</td>
+                <td>Zapier</td>
+                <td>Moderate</td>
+                <td>Yes</td>
+            </tr>
+            <tr>
+                <td><a href="https://make.com" target="_blank" rel="noopener noreferrer">Make</a></td>
+                <td>No-code visual workflow builder, similar model to Zapier</td>
+                <td>Make</td>
+                <td>Moderate</td>
+                <td>Yes</td>
+            </tr>
+            <tr>
+                <td><a href="https://n8n.io" target="_blank" rel="noopener noreferrer">n8n</a></td>
+                <td>Open-source workflow automation tool</td>
+                <td>n8n's own editor (self-hosted or n8n.cloud)</td>
+                <td>Technical</td>
+                <td>Yes</td>
+            </tr>
+            <tr>
+                <td><a href="https://developers.google.com/apps-script" target="_blank" rel="noopener noreferrer">Google Apps Script / Gmail API</a></td>
+                <td>Custom code that searches Gmail and saves matches to Drive</td>
+                <td>script.google.com</td>
+                <td>Technical</td>
+                <td>Yes</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<h2 id="which-fits">Which option actually fits</h2>
+
+<p>
+    The six tools split into the three setup-effort tiers above, and which one fits depends on who's doing the setup and how the workflow needs to run — not on which tool is "best" outright.
+</p>
+
+<p>
+    <strong>Easy tier — Attachment Hippo and Save Emails and Attachments.</strong> Both let a sales or ops person search an inbox for specific emails and save matching spreadsheet attachments to Google Drive without writing code or learning a new platform. The difference is where setup happens and what's included for free: Attachment Hippo is configured entirely inside Gmail and runs automatically once a day on its free tier; Save Emails and Attachments is configured from a Google Sheet, which suits teams that want a running log of everything saved, but its free version only saves attachments when someone manually clicks "run" — background automation requires a paid plan.
+</p>
+
+<p>
+    <strong>Moderate tier — Zapier and Make.</strong> These fit once the requirement grows past "just save the file" — for example, saving the attachment and then posting to Slack or updating a CRM record. Both require learning a dedicated workflow-builder platform outside Gmail, and both cap free-tier automation to a 15-minute polling interval rather than reacting instantly.
+</p>
+
+<p>
+    <strong>Technical tier — Google Apps Script/Gmail API and n8n.</strong> These make sense once there are enough clients that per-task pricing starts to matter, or the filtering logic needs to be genuinely custom — multiple sender formats, conditional branching, non-standard file naming. Both require someone who can write and maintain code, and both run fully automated once set up: Apps Script through a time-driven trigger, n8n through a self-hosted or cloud workflow.
+</p>
+
+<p>
+    Every option here solves the same underlying problem from Part 1: turning "search the inbox for specific emails" from something a person has to remember to do into a process that runs whether or not anyone's watching.
+</p>
+
+<div class="takeaways">
+    <span class="takeaways-label">Key takeaways</span>
+    <ul>
+        <li>Reliable inbox search requires at least four signals: sender, subject or label, attachment type, and recency.</li>
+        <li>A minimal Apps Script function covers all four and runs on Google's own servers — no infrastructure needed.</li>
+        <li>The script stops scaling cleanly around client three: that's when it becomes a system, not a fix.</li>
+        <li>For non-engineers, Attachment Hippo and Save Emails and Attachments both solve this without code; the difference is where you configure them and what's automated for free.</li>
+        <li>For engineers handling multiple clients or custom logic, Apps Script and n8n are the right-sized tools once per-task pricing starts to matter.</li>
+    </ul>
+</div>
+
+<div class="post-cta">
+    <p class="post-cta-title">Rather not build it?</p>
+    <p class="post-cta-body">
+        Attachment Hippo handles the inbox-watching and Drive-saving automatically — no script to write or maintain.
+    </p>
+    <a href="https://workspace.google.com/marketplace/app/attachment_hippo/720296425994?flow_type=2" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Add to Gmail™ - it's free</a>
+</div>
+
+<div class="author-box">
+    <div class="author-avatar">AH</div>
+    <div>
+        <p class="author-name">The Attachment Hippo Team</p>
+        <p class="author-bio">We build tools that keep your Gmail inbox from eating your day. Attachment Hippo automatically saves email attachments to Google Drive based on rules you define.</p>
+    </div>
+</div>
+
+<div class="post-sources">
+    <span class="post-sources-label">Sources</span>
+    <ol>
+        <li>Attachment Hippo — <a href="https://attachmenthippo.com" target="_blank" rel="noopener noreferrer">attachmenthippo.com</a></li>
+        <li>Attachment Hippo pricing — <a href="https://attachmenthippo.com/pricing.html" target="_blank" rel="noopener noreferrer">attachmenthippo.com/pricing.html</a></li>
+        <li>Attachment Hippo on Google Workspace Marketplace — <a href="https://workspace.google.com/marketplace/app/attachment_hippo/720296425994" target="_blank" rel="noopener noreferrer">workspace.google.com/marketplace</a></li>
+        <li>Save Emails and Attachments, run workflow docs — <a href="https://digitalinspiration.com" target="_blank" rel="noopener noreferrer">digitalinspiration.com</a></li>
+        <li>Zapier free plan and Zap limits — <a href="https://zapier.com/pricing" target="_blank" rel="noopener noreferrer">zapier.com/pricing</a></li>
+        <li>Google Apps Script quotas — <a href="https://developers.google.com/apps-script/guides/services/quotas" target="_blank" rel="noopener noreferrer">developers.google.com/apps-script/guides/services/quotas</a></li>
+        <li>Gmail API search query reference — <a href="https://developers.google.com/gmail/api/reference/rest/v1/users.messages/list" target="_blank" rel="noopener noreferrer">developers.google.com/gmail/api</a></li>
+        <li>n8n: Auto-save Gmail attachments to Drive workflow — <a href="https://n8n.io" target="_blank" rel="noopener noreferrer">n8n.io</a></li>
+    </ol>
+</div>
+
+<div class="related">
+    <span class="related-label">Related articles</span>
+
+    <a href="/blog/saving-spreadsheets-to-google-drive/" class="related-card">
+        <div>
+            <p class="related-card-title">Saving Spreadsheets to Google Drive: How Every SaaS Integration Actually Starts</p>
+            <p class="related-card-meta">September 7, 2026 · 4 min read · Part 1 of 2</p>
+        </div>
+        <span class="related-card-arrow">→</span>
+    </a>
+
+    <a href="/blog/welcome-to-attachment-hippo-blog/" class="related-card">
+        <div>
+            <p class="related-card-title">Welcome to the Attachment Hippo Blog</p>
+            <p class="related-card-meta">March 23, 2026 · 2 min read</p>
+        </div>
+        <span class="related-card-arrow">→</span>
+    </a>
+
+</div>

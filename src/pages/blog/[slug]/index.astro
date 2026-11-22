@@ -1,0 +1,171 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { getPosts, getBody, readingTime, formatDate, isoDate, type Post } from '../../../lib/blog';
+import { site } from '../../../site.config';
+import '../../../styles/article.css';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props as { post: Post };
+const { data } = post;
+const body = getBody(post.id);
+const minutes = readingTime(body);
+const url = new URL(`/blog/${post.id}/`, site.url).href;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: data.title,
+  description: data.description,
+  image: new URL(data.cover, site.url).href,
+  datePublished: data.pubDate.toISOString(),
+  dateModified: (data.updatedDate ?? data.pubDate).toISOString(),
+  author: { '@type': 'Organization', name: data.author },
+  publisher: { '@type': 'Organization', name: site.name, url: site.url },
+  mainEntityOfPage: url,
+  keywords: data.keywords,
+};
+---
+
+<Base
+  title={data.seoTitle ?? data.title}
+  description={data.description}
+  keywords={data.keywords}
+  image={data.cover}
+  imageAlt={data.coverAlt}
+  type="article"
+  jsonLd={jsonLd}
+>
+  <Fragment slot="head">
+    <meta property="article:published_time" content={data.pubDate.toISOString()} />
+    {data.updatedDate && <meta property="article:modified_time" content={data.updatedDate.toISOString()} />}
+    {data.tags.map((t) => <meta property="article:tag" content={t} />)}
+  </Fragment>
+
+  <article class="post">
+    <header class="wrap grid post-header">
+      <a class="back label" href="/blog/"><span aria-hidden="true">←</span> Blog</a>
+      <div class="post-header-main">
+        {data.eyebrow && <span class="post-eyebrow">{data.eyebrow}</span>}
+        <h1 class="post-title">{data.title}</h1>
+      </div>
+      <dl class="post-meta">
+        <div class="post-meta-item">
+          <dt>Published</dt>
+          <dd><time datetime={isoDate(data.pubDate)}>{formatDate(data.pubDate)}</time></dd>
+        </div>
+        <div class="post-meta-item">
+          <dt>Author</dt>
+          <dd>{data.author}</dd>
+        </div>
+        <div class="post-meta-item">
+          <dt>Reading time</dt>
+          <dd>{minutes} min</dd>
+        </div>
+        {
+          data.series && (
+            <div class="post-meta-item">
+              <dt>Series</dt>
+              <dd>{data.series}</dd>
+            </div>
+          )
+        }
+      </dl>
+    </header>
+
+    <div class="wrap">
+      <figure class="post-featured-image">
+        <img src={data.cover} alt={data.coverAlt} width="1731" height="909" fetchpriority="high" />
+      </figure>
+    </div>
+
+    <div class="wrap grid post-body">
+      <aside class="post-aside" aria-label="About this article">
+        {
+          data.tags.length > 0 && (
+            <div>
+              <span class="label label--muted">Topics</span>
+              <ul class="post-tags" role="list">
+                {data.tags.map((t) => (
+                  <li>{t}</li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+        <a class="btn btn--ink btn--sm aside-cta" href={site.installUrl} target="_blank" rel="noopener noreferrer">
+          {site.installLabel}
+        </a>
+      </aside>
+
+      <div class="post-content" set:html={body} />
+    </div>
+  </article>
+</Base>
+
+<style>
+  .post-header {
+    padding-top: clamp(2.5rem, 1rem + 5vw, 6rem);
+    row-gap: var(--s-4);
+  }
+  .back {
+    grid-column: 1 / span 3;
+    text-decoration: none;
+    align-self: start;
+    padding-top: 0.35rem;
+  }
+  .back:hover {
+    color: var(--accent);
+  }
+  .post-header-main {
+    grid-column: 4 / -1;
+  }
+  .post-meta {
+    grid-column: 1 / -1;
+    margin: 0;
+  }
+  .post-body {
+    padding-bottom: var(--section);
+  }
+  .post-aside {
+    grid-column: 1 / span 3;
+    align-self: start;
+    position: sticky;
+    top: calc(var(--header-h) + var(--s-4));
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-4);
+    padding-top: var(--s-6);
+  }
+  .post-aside .label {
+    padding-bottom: var(--s-1);
+    border-bottom: var(--rule-hair);
+    margin-bottom: var(--s-1);
+  }
+  .post-tags li {
+    font-size: var(--fs-s);
+    padding-block: 0.2rem;
+  }
+  .aside-cta {
+    align-self: flex-start;
+    white-space: normal;
+  }
+  .post-body :global(.post-content) {
+    grid-column: 4 / -1;
+  }
+  @media (max-width: 960px) {
+    .back,
+    .post-header-main {
+      grid-column: 1 / -1;
+    }
+    .post-aside {
+      display: none;
+    }
+    .post-body :global(.post-content) {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

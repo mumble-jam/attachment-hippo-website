@@ -1,0 +1,34 @@
+---
+/**
+ * The Attachment Hippo mark. Geometry comes from brand/tools/mark.json —
+ * regenerate it with brand/tools/build_mark.py and the site picks it up.
+ * Fill follows `currentColor`; the eye and nostril are cut out.
+ */
+import mark from '../../brand/tools/mark.json';
+
+interface Props {
+  /** Rendered width in px (height follows the aspect ratio). */
+  width?: number;
+  /** Drop the eye and nostril — use below ~40px wide. */
+  simple?: boolean;
+  class?: string;
+  title?: string;
+}
+const { width = 48, simple = false, class: className, title } = Astro.props;
+const [, , vbW, vbH] = mark.viewBox.split(' ').map(Number);
+const d = simple ? mark.body : mark.body + mark.features;
+---
+
+<svg
+  class={className}
+  width={width}
+  height={Math.round((width * vbH) / vbW)}
+  viewBox={mark.viewBox}
+  fill="currentColor"
+  role={title ? 'img' : undefined}
+  aria-hidden={title ? undefined : 'true'}
+  aria-label={title}
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path fill-rule="evenodd" d={d}></path>
+</svg>

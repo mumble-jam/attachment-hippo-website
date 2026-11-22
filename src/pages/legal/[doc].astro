@@ -1,0 +1,212 @@
+---
+import Base from '../../layouts/Base.astro';
+import { site } from '../../site.config';
+
+/** Legal texts live in src/content/legal/<doc>.html — edit them there. */
+const texts = import.meta.glob<string>('../../content/legal/*.html', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+});
+
+const docs = {
+  terms_of_service: {
+    title: 'Terms of Service',
+    heading: 'Terms of Service for Attachment Hippo',
+    updated: 'December 18, 2024',
+    description: 'Terms of Service for Attachment Hippo - Read our terms and conditions for using the service.',
+  },
+  privacy_policy: {
+    title: 'Privacy Policy',
+    heading: 'Privacy Policy',
+    updated: 'October 18, 2026',
+    description: 'Privacy Policy for Attachment Hippo - Learn how we collect, use, and protect your data.',
+  },
+  refund_policy: {
+    title: 'Refund Policy',
+    heading: 'Refund Policy',
+    updated: 'December 19, 2024',
+    description: 'Refund Policy for Attachment Hippo - Learn about our refund process and cancellation terms.',
+  },
+} as const;
+
+type Doc = keyof typeof docs;
+
+export function getStaticPaths() {
+  return (['terms_of_service', 'privacy_policy', 'refund_policy'] as const).map((doc) => ({ params: { doc } }));
+}
+
+const doc = Astro.params.doc as Doc;
+const meta = docs[doc];
+const html = texts[`../../content/legal/${doc}.html`];
+---
+
+<Base title={`${meta.title} — Attachment Hippo`} description={meta.description}>
+  <article class="wrap legal">
+    <header class="grid page-head">
+      <span class="label"><span class="accent">Legal</span></span>
+      <h1 class="h2 legal-title">{meta.heading}</h1>
+      <p class="updated">Last updated: {meta.updated}</p>
+    </header>
+
+    <div class="grid legal-body">
+      <nav class="legal-nav" aria-label="Legal documents">
+        <span class="label label--muted">Documents</span>
+        <ul role="list">
+          {
+            site.legal.map((item) => (
+              <li>
+                <a href={item.href} aria-current={item.href.endsWith(`${doc}.html`) ? 'page' : undefined}>
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+      <div class="legal-content" set:html={html} />
+    </div>
+  </article>
+</Base>
+
+<style>
+  .legal {
+    padding-block: clamp(2.5rem, 1rem + 5vw, 6rem) var(--section);
+  }
+  .accent {
+    color: var(--accent);
+  }
+  .page-head {
+    row-gap: var(--s-2);
+    padding-bottom: var(--s-3);
+    border-bottom: var(--rule-ink);
+    margin-bottom: var(--s-6);
+  }
+  .page-head .label {
+    grid-column: 1 / span 3;
+  }
+  .legal-title {
+    grid-column: 4 / -1;
+    max-width: 18ch;
+  }
+  .updated {
+    grid-column: 4 / -1;
+    font-size: var(--fs-s);
+    color: var(--ink-3);
+  }
+  .legal-nav {
+    grid-column: 1 / span 3;
+    align-self: start;
+    position: sticky;
+    top: calc(var(--header-h) + var(--s-4));
+  }
+  .legal-nav .label {
+    padding-bottom: var(--s-1);
+    border-bottom: var(--rule-hair);
+    margin-bottom: var(--s-1);
+  }
+  .legal-nav a {
+    display: block;
+    padding-block: 0.3rem;
+    font-size: var(--fs-s);
+    text-decoration: none;
+  }
+  .legal-nav a:hover,
+  .legal-nav a[aria-current='page'] {
+    color: var(--accent);
+  }
+  .legal-nav a[aria-current='page'] {
+    font-weight: 600;
+  }
+
+  /* --- the imported legal markup --- */
+  .legal-content {
+    grid-column: 4 / span 7;
+    min-width: 0;
+  }
+  .legal-content :global(h2) {
+    font-family: var(--font-display);
+    font-size: var(--fs-xl);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin: var(--s-6) 0 var(--s-2);
+    padding-top: var(--s-2);
+    border-top: 1px solid var(--ink);
+  }
+  .legal-content > :global(h2:first-child),
+  .legal-content > :global(:first-child > h2:first-child) {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+  }
+  .legal-content :global(h3) {
+    font-size: var(--fs-m);
+    font-weight: 700;
+    margin: var(--s-4) 0 var(--s-1);
+  }
+  .legal-content :global(p),
+  .legal-content :global(li) {
+    font-size: var(--fs-body);
+    line-height: 1.7;
+    color: var(--ink-2);
+  }
+  .legal-content :global(p) {
+    margin-bottom: var(--s-2);
+  }
+  .legal-content :global(ul),
+  .legal-content :global(ol) {
+    margin: 0 0 var(--s-2);
+    padding-left: 1.25rem;
+  }
+  .legal-content :global(li) {
+    margin-bottom: 0.375rem;
+  }
+  .legal-content :global(strong) {
+    color: var(--ink);
+  }
+  .legal-content :global(a) {
+    text-decoration-color: var(--accent);
+    text-underline-offset: 0.18em;
+    overflow-wrap: anywhere;
+  }
+  .legal-content :global(a:hover) {
+    color: var(--accent);
+  }
+  .legal-content :global(.highlight-box),
+  .legal-content :global(.important-notice),
+  .legal-content :global(.disclaimer) {
+    margin: var(--s-3) 0;
+    padding: var(--s-3);
+    background: var(--field);
+    border-top: 2px solid var(--ink);
+  }
+  .legal-content :global(.important-notice),
+  .legal-content :global(.disclaimer) {
+    border-top-color: var(--accent);
+  }
+  .legal-content :global(.highlight-box p:last-child),
+  .legal-content :global(.important-notice p:last-child),
+  .legal-content :global(.disclaimer p:last-child) {
+    margin-bottom: 0;
+  }
+  .legal-content :global(.contact-info),
+  .legal-content :global(.contact-section) {
+    margin-top: var(--s-6);
+  }
+
+  @media (max-width: 960px) {
+    .page-head .label,
+    .legal-title,
+    .updated,
+    .legal-content {
+      grid-column: 1 / -1;
+    }
+    .legal-nav {
+      position: static;
+      grid-column: 1 / -1;
+      grid-row: 2;
+      margin-top: var(--s-8);
+    }
+  }
+</style>

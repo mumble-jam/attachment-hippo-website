@@ -1,0 +1,133 @@
+<p class="post-lead">
+Long before there's a "real" integration, someone in sales is manually searching their inbox for a client's spreadsheet and saving it to Google Drive by hand — and no one signed up for that job.
+</p>
+
+<nav class="post-toc">
+<span class="post-toc-label">In this article</span>
+<ol>
+<li><a href="#spreadsheet-plan">Why the spreadsheet becomes the plan</a></li>
+<li><a href="#manual-work">Why the manual work lands on sales</a></li>
+<li><a href="#real-fix">The real fix: automatically saving spreadsheets to Google Drive</a></li>
+<li><a href="#duct-tape">Where the duct tape starts showing</a></li>
+</ol>
+</nav>
+
+<p>
+Picture the scene. Sales just closed a big one. There's a Slack message with three confetti emojis, someone rings the gong, and the client kickoff call ends with everyone smiling. Deal done, client happy.
+</p>
+
+<p>
+Two floors down, or two Slack channels over, the tech team is mid-sprint — backlog groomed, tickets estimated, everyone heads-down. Then a calendar invite shows up: "New Client Integration — Kickoff." Nobody on the invite actually knows what "integration" means yet.
+</p>
+
+<p>
+That's the moment every SaaS company selling into a non-technical industry knows well. Sales sold the outcome. Nobody in that kickoff call sold a plan for how the data actually gets from their systems into yours. The client's team is brilliant at their actual business — logistics, healthcare, retail, whatever it is — but nobody on their side speaks API. Now two non-technical teams are staring at each other over Zoom, both assuming the other one has a plan.
+</p>
+
+<h2 id="spreadsheet-plan">Why the spreadsheet becomes the plan</h2>
+
+<p>
+Someone has to say the first practical thing out loud, and it's usually the client: "Can we just send you a spreadsheet?"
+</p>
+
+<p>
+Honestly, it's the only idea on the table — a spreadsheet is about the only thing both sides can produce without pulling an engineer into the room. So that becomes the plan. Client exports data, emails a spreadsheet, sales forwards it along like a very expensive courier. For about a week, this feels like progress.
+</p>
+
+<h2 id="manual-work">Why the manual work lands on sales</h2>
+
+<p>
+Here's the part that doesn't show up in the kickoff deck: someone from sales ends up watching for these emails. Usually it's the client sending them to whatever list got agreed on during onboarding — that part works fine. What doesn't exist is a job description that says "monitor this inbox." Nobody was hired for it. It's not in anyone's performance review. Sales does it because they're on the list and they happen to notice.
+</p>
+
+<p>
+So the ask that actually gets made isn't "sync everything into a master spreadsheet." It's smaller: can every report at least land in one shared Drive folder, somewhere to check that isn't a personal inbox? That alone counts as a win — not a pipeline, not a source of truth, just proof the file landed somewhere everyone can see.
+</p>
+
+<p>
+And now there's a ticket in tech's backlog: "Save [Client] email attachments to shared Drive folder," dropped into a sprint that was already full, for a client nobody on the team has met, solving a problem that was never architected — only discovered.
+</p>
+
+<p>
+Until that ticket gets picked up, someone has to manually watch the inbox, download the attachment, and drop it in the folder by hand. That's still sales, because they're already on the thread. They didn't sign up for it, but it's hard to argue against — they're the ones who'd actually notice if a file went missing. The catch is that noticing only happens if someone's looking. When the person who usually checks is out sick or buried in other deals, the report just sits there until the client asks why the numbers look stale.
+</p>
+
+<p>
+Tech, meanwhile, is triaging this against a real backlog. The fix is never quite urgent enough to jump the queue, never quite small enough to ignore. So it lingers — inconsistent, semi-manual, held together by whoever remembers to check the inbox that day.
+</p>
+
+<h2 id="real-fix">The real fix: automatically saving spreadsheets to Google Drive</h2>
+
+<p>
+Writing that function isn't the hard part, from a developer's point of view. It's real work, but not complicated work — any developer can build something that watches an inbox and saves the attachment. The hard part comes later. A client renames their monthly report. Adds a new one. Needs the search tweaked because the sender changed. Someone has to go back in and fix it.
+</p>
+
+<p>
+And that someone is already busy with something else. It's a small change, sure, but it has nothing to do with whatever the team is shipping this sprint, so it waits. It sits until someone finds an hour to context-switch back into code they wrote months ago.
+</p>
+
+<p>
+The build was never the problem. The maintenance is — a task that's not on anyone's roadmap, so instead of blowing up all at once, it wears on people slowly, one small favor at a time. That's usually where the cracks start.
+</p>
+
+<h2 id="duct-tape">Where the duct tape starts showing</h2>
+<p>
+And they do start showing. It works fine at first. Then a second client needs different matching rules. Then a third. Nobody has time to sit down and build one flexible version that handles all of them, so each client ends up with their own copy of the script instead. Now there are three versions of basically the same function, and engineering keeps getting pulled back in to patch whichever one broke this week — usually for a client half the team has never spoken to.
+</p>
+
+<p>
+Nobody designed this system on purpose — it accumulated, one patch at a time, and each version ended up owned by whoever happened to be the one fixing it. Understanding it lives in that one person's head, not in any doc. It works fine until they're on vacation, and whoever's left has to relearn the script from scratch before they can touch it.
+</p>
+
+<div class="cta-inline">
+<p class="cta-inline-title">Next up: the hands-on build</p>
+<p>Part 2 walks through how to search an inbox for specific emails and auto-save the attachments to Google Drive — plus how six ready-made tools compare on setup difficulty for teams that would rather not build it themselves.</p>
+<a href="/blog/search-inbox-for-specific-emails-save-to-drive/" class="btn btn-primary">Read Part 2 →</a>
+</div>
+
+<div class="takeaways">
+<span class="takeaways-label">Key takeaways</span>
+<ul>
+<li>Spreadsheets become the default integration plan because they're the only artifact both teams can produce without an engineer in the room.</li>
+<li>Manual inbox-watching lands on sales by default — not by design — because they're already on the email thread.</li>
+<li>The engineering fix is narrower than it looks: reliably catch the right email, save the attachment to Drive, stop depending on a human to remember.</li>
+<li>Manual systems hold together until the one person who remembers to check isn't available.</li>
+</ul>
+</div>
+
+<div class="post-cta">
+<p class="post-cta-title">Skip the manual part entirely.</p>
+<p class="post-cta-body">
+Attachment Hippo watches your Gmail inbox and saves matching spreadsheet attachments to Google Drive automatically — no engineering ticket required.
+</p>
+<a href="https://workspace.google.com/marketplace/app/attachment_hippo/720296425994?flow_type=2" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Add to Gmail™ - it's free</a>
+</div>
+
+<div class="author-box">
+<div class="author-avatar">AH</div>
+<div>
+<p class="author-name">The Attachment Hippo Team</p>
+<p class="author-bio">We build tools that keep your Gmail inbox from eating your day. Attachment Hippo automatically saves email attachments to Google Drive based on rules you define.</p>
+</div>
+</div>
+
+<div class="related">
+<span class="related-label">Related articles</span>
+
+<a href="/blog/welcome-to-attachment-hippo-blog/" class="related-card">
+<div>
+<p class="related-card-title">Welcome to the Attachment Hippo Blog</p>
+<p class="related-card-meta">March 23, 2026 · 2 min read</p>
+</div>
+<span class="related-card-arrow">→</span>
+</a>
+
+<a href="/blog/search-inbox-for-specific-emails-save-to-drive/" class="related-card">
+<div>
+<p class="related-card-title">How to Search an Inbox for Specific Emails and Auto-Save Attachments to Google Drive</p>
+<p class="related-card-meta">September 7, 2026 · 5 min read · Part 2 of 2</p>
+</div>
+<span class="related-card-arrow">→</span>
+</a>
+
+</div>

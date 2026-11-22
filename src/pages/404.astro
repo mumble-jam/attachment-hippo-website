@@ -1,0 +1,50 @@
+---
+import Base from '../layouts/Base.astro';
+import Logo from '../components/Logo.astro';
+---
+
+<Base title="Page not found — Attachment Hippo" description="This page could not be found." noindex>
+  <section class="wrap grid nf">
+    <span class="label"><span class="accent">Error</span></span>
+    <h1 class="display code">404</h1>
+    <div class="body">
+      <Logo width={120} class="hippo" />
+      <p class="lead">This page has wandered off. The hippo looked everywhere.</p>
+      <a class="btn btn--ink" href="/">Back to the home page <span class="arrow" aria-hidden="true">→</span></a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    padding-block: clamp(3rem, 1rem + 6vw, 8rem) var(--section);
+    row-gap: var(--s-4);
+  }
+  .label,
+  .code {
+    grid-column: 1 / -1;
+  }
+  .accent {
+    color: var(--accent);
+  }
+  .code {
+    font-size: clamp(6rem, 2rem + 18vw, 18rem);
+    font-weight: 700;
+    border-bottom: var(--rule-ink);
+  }
+  .body {
+    grid-column: 4 / span 6;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--s-3);
+  }
+  .body :global(.hippo) {
+    color: var(--lavender);
+  }
+  @media (max-width: 760px) {
+    .body {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

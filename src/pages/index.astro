@@ -1,0 +1,409 @@
+---
+import Base from '../layouts/Base.astro';
+import Logo from '../components/Logo.astro';
+import { site } from '../site.config';
+
+const useCases = [
+  {
+    title: 'Automated invoice and report archiving',
+    text: 'Automatically save invoices and financial reports from Gmail™ to Google Drive™. Perfect for small businesses and freelancers who need organized, accessible records for billing, audits, or tax prep.',
+  },
+  {
+    title: 'Contract management',
+    text: 'Simplify contract management by auto-saving signed agreements and legal documents from Gmail™ to Google Drive™. Ideal for lawyers, contractors, and legal teams.',
+  },
+  {
+    title: 'Team collaboration',
+    text: 'Keep teams aligned by automatically storing email attachments — like docs and presentations — in shared Google Drive™ folders. Ensure everyone works from the latest version.',
+  },
+  {
+    title: 'Automatic photo backup',
+    text: 'Auto-save images from Gmail™ to Google Drive™. Great for backing up product shots, event photos, or visual assets without manual downloads.',
+  },
+  {
+    title: 'Organization of educational resources',
+    text: 'Automatically store class materials, notes, and research papers from Gmail™ to Google Drive™. Built for students, teachers, and academic professionals who need quick access and structure.',
+  },
+];
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: site.name,
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'Web, Google Workspace',
+    description: 'Automatically download and save your Gmail attachments to Google Drive.',
+    url: site.url,
+    installUrl: site.installUrl,
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: site.name,
+    url: site.url,
+    email: site.email,
+  },
+];
+---
+
+<Base
+  title="Download and save Gmail™ attachments to Google Drive™ automatically"
+  description="Automatically download and save your Gmail attachments to Google Drive"
+  keywords="Gmail, Google Drive, attachments, automation, email"
+  jsonLd={jsonLd}
+>
+  <!-- ============ HERO ============ -->
+  <section class="hero wrap" aria-labelledby="hero-title">
+    <div class="grid hero-top">
+      <span class="label">Gmail™ → Google Drive™</span>
+      <span class="label label--muted hero-kicker">Attachment Hippo</span>
+    </div>
+
+    <h1 id="hero-title" class="display hero-title">
+      Save <b>Gmail<span class="tm">™</span></b> attachments to <b>Drive<span class="tm">™</span></b> automatically
+    </h1>
+
+    <div class="grid hero-foot">
+      <p class="lead hero-lead">
+        Save your time and be sure that your attachments from Gmail™ are saved automatically in the Drive™ folder.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn--accent" href={site.installUrl} target="_blank" rel="noopener noreferrer">
+          {site.installLabel}
+          <span class="arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="btn btn--line" href="/pricing.html">
+          See pricing
+          <span class="arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Schematic: inbox → rule → folder -->
+    <figure class="flow" aria-label="Attachments travel from Gmail to a Google Drive folder automatically">
+      <div class="flow-node">
+        <span class="label label--muted">From</span>
+        <span class="flow-name">Gmail<span class="tm">™</span></span>
+        <span class="flow-meta">Inbox · attachments</span>
+      </div>
+      <div class="flow-line" aria-hidden="true">
+        <span class="flow-rail"></span>
+        <span class="flow-hippo"><Logo width={64} /></span>
+        <span class="flow-head"></span>
+      </div>
+      <div class="flow-node flow-node--end">
+        <span class="label label--muted">To</span>
+        <span class="flow-name">Drive<span class="tm">™</span></span>
+        <span class="flow-meta">Folder · automatically</span>
+      </div>
+    </figure>
+  </section>
+
+  <!-- ============ USE CASES ============ -->
+  <section id="use-cases" class="section wrap" aria-labelledby="use-cases-title">
+    <div class="grid section-head">
+      <span class="label"><span class="accent num">01</span></span>
+      <h2 id="use-cases-title" class="h2">Use cases</h2>
+    </div>
+
+    <ol class="cases" role="list">
+      {
+        useCases.map((item, i) => (
+          <li class="grid case">
+            <span class="case-num num" aria-hidden="true">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            <h3 class="h3 case-title">{item.title}</h3>
+            <p class="case-text">{item.text}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section id="contact" class="section wrap contact" aria-labelledby="contact-title">
+    <div class="grid section-head">
+      <span class="label"><span class="accent num">02</span></span>
+      <h2 id="contact-title" class="h2">Contact us</h2>
+    </div>
+
+    <div class="grid">
+      <p class="lead contact-text">
+        We’d love to hear from you! Drop us a line and we’ll get back to you as soon as possible.
+      </p>
+      <a class="contact-mail" href={`mailto:${site.email}`}>
+        <span>{site.email}</span>
+        <span class="arrow" aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* ---------- hero ---------- */
+  .hero {
+    padding-top: clamp(2.5rem, 1rem + 5vw, 6rem);
+  }
+  .hero-top {
+    padding-bottom: var(--s-3);
+  }
+  .hero-top .label:first-child {
+    grid-column: 1 / span 6;
+  }
+  .hero-kicker {
+    grid-column: 7 / -1;
+    justify-self: end;
+  }
+  .hero-title {
+    max-width: 14ch;
+    font-size: clamp(2.75rem, 1rem + 6.4vw, 7.5rem);
+  }
+  .hero-title :global(.tm),
+  .flow-name :global(.tm) {
+    font-size: 0.42em;
+    font-weight: 500;
+    vertical-align: 0.95em;
+    letter-spacing: 0;
+    margin-left: 0.04em;
+  }
+  .hero-foot {
+    margin-top: clamp(2.5rem, 1.5rem + 4vw, 5rem);
+    padding-top: var(--s-2);
+    border-top: var(--rule-ink);
+    row-gap: var(--s-4);
+    align-items: start;
+  }
+  .hero-lead {
+    grid-column: 4 / span 5;
+    max-width: 30ch;
+  }
+  .hero-actions {
+    grid-column: 9 / -1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-1);
+  }
+
+  /* flow schematic */
+  .flow {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 6fr) minmax(0, 3fr);
+    column-gap: var(--gutter);
+    align-items: end;
+    margin-top: var(--s-12);
+    padding-block: var(--s-3);
+    border-top: var(--rule-hair);
+    border-bottom: var(--rule-hair);
+  }
+  .flow-node {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .flow-node--end {
+    text-align: right;
+    align-items: flex-end;
+  }
+  .flow-name {
+    font-family: var(--font-display);
+    font-size: var(--fs-2xl);
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 1;
+  }
+  .flow-meta {
+    font-size: var(--fs-s);
+    color: var(--ink-3);
+  }
+  .flow-line {
+    position: relative;
+    height: 3.25rem;
+    align-self: center;
+  }
+  .flow-rail {
+    position: absolute;
+    left: 0;
+    right: 0.25rem;
+    top: 50%;
+    height: 2px;
+    background: repeating-linear-gradient(90deg, var(--ink) 0 10px, transparent 10px 16px);
+  }
+  .flow-head {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    width: 0.875rem;
+    height: 0.875rem;
+    border-top: 2px solid var(--ink);
+    border-right: 2px solid var(--ink);
+    transform: translateY(-50%) rotate(45deg);
+  }
+  .flow-hippo :global(svg) {
+    width: clamp(2.75rem, 2rem + 2vw, 4rem);
+    height: auto;
+  }
+  .flow-hippo {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    color: var(--lavender);
+    background: var(--paper);
+    padding-inline: 0.5rem;
+    transform: translate(0, -60%);
+    animation: trot 7s var(--ease) infinite;
+  }
+  @keyframes trot {
+    0% {
+      left: 0%;
+      opacity: 0;
+    }
+    8% {
+      opacity: 1;
+    }
+    80% {
+      left: calc(100% - 5rem);
+      opacity: 1;
+    }
+    92%,
+    100% {
+      left: calc(100% - 5rem);
+      opacity: 0;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .flow-hippo {
+      animation: none;
+      left: 50%;
+      transform: translate(-50%, -60%);
+    }
+  }
+
+  /* ---------- use cases ---------- */
+  .accent {
+    color: var(--accent);
+  }
+  .case {
+    border-top: 1px solid var(--ink);
+    padding-block: var(--s-3) var(--s-4);
+    row-gap: var(--s-2);
+    align-items: baseline;
+  }
+  .case:last-child {
+    border-bottom: 1px solid var(--ink);
+  }
+  .case-num {
+    grid-column: 1 / span 3;
+    font-size: var(--fs-xl);
+    font-weight: 500;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .case-title {
+    grid-column: 4 / span 4;
+  }
+  .case-text {
+    grid-column: 8 / -1;
+    font-size: var(--fs-body);
+    color: var(--ink-2);
+    max-width: 46ch;
+  }
+  .case {
+    transition: background-color 200ms var(--ease);
+  }
+
+  /* ---------- contact ---------- */
+  .contact {
+    padding-bottom: var(--section);
+  }
+  .contact-text {
+    grid-column: 4 / span 6;
+    max-width: 34ch;
+    margin-bottom: var(--s-6);
+  }
+  .contact-mail {
+    grid-column: 4 / -1;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--s-2);
+    padding-block: var(--s-2);
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 0.8rem + 3.6vw, 4.5rem);
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+    transition: color 150ms var(--ease);
+  }
+  .contact-mail:hover {
+    color: var(--accent);
+  }
+  .contact-mail .arrow {
+    flex: none;
+    transition: transform 200ms var(--ease);
+  }
+  .contact-mail:hover .arrow {
+    transform: translate(4px, -4px);
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 960px) {
+    .hero-lead {
+      grid-column: 1 / span 7;
+    }
+    .hero-actions {
+      grid-column: 8 / -1;
+    }
+    .case-num {
+      grid-column: 1 / span 2;
+    }
+    .case-title {
+      grid-column: 3 / -1;
+    }
+    .case-text {
+      grid-column: 3 / -1;
+    }
+    .contact-text,
+    .contact-mail {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (max-width: 640px) {
+    .hero-kicker {
+      display: none;
+    }
+    .hero-lead,
+    .hero-actions {
+      grid-column: 1 / -1;
+    }
+    .hero-actions .btn {
+      width: 100%;
+    }
+    .flow {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      row-gap: var(--s-3);
+    }
+    .flow-line {
+      grid-column: 1 / -1;
+      grid-row: 2;
+    }
+    .flow-node--end {
+      grid-row: 1;
+      grid-column: 2;
+    }
+    .case-num {
+      grid-column: 1 / -1;
+      font-size: var(--fs-m);
+    }
+    .case-title,
+    .case-text {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

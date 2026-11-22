@@ -1,0 +1,336 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../site.config';
+
+const check = 'M3 8.5l3.2 3L13 4.5';
+---
+
+<Base
+  title="Pricing — Attachment Hippo"
+  description="Attachment Hippo Pricing - Choose the perfect plan for your needs"
+  keywords="Gmail, Google Drive, attachments, automation, pricing"
+>
+  <Fragment slot="head">
+    <script is:inline src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+    <script is:inline src="/js/pricing.js"></script>
+  </Fragment>
+
+  <section class="wrap pricing" aria-labelledby="pricing-title">
+    <div class="grid page-head">
+      <span class="label"><span class="accent">Plans</span></span>
+      <h1 id="pricing-title" class="display">Pricing</h1>
+    </div>
+
+    <div class="plans">
+      <!-- Beginner -->
+      <article class="plan" aria-labelledby="plan-beginner">
+        <header class="plan-head">
+          <span class="plan-index num">01</span>
+          <h2 id="plan-beginner" class="plan-name">Beginner</h2>
+        </header>
+        <p class="plan-price"><span class="price-amount">Free</span></p>
+        <div class="plan-note"></div>
+        <a class="btn btn--line btn--block" href={site.installUrl} target="_blank" rel="noopener noreferrer">
+          Get started <span class="arrow" aria-hidden="true">→</span>
+        </a>
+        <ul class="features" role="list">
+          {
+            [
+              'Google Drive integration',
+              'Automatic attachment saving',
+              'Up to 2 automation rules',
+              'Up to 10 attachments per month',
+              'Custom file name',
+              'Daily processing',
+              'Email support',
+            ].map((f) => (
+              <li>
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path d={check} /></svg>
+                <span>{f}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </article>
+
+      <!-- Essential -->
+      <article class="plan" aria-labelledby="plan-essential">
+        <header class="plan-head">
+          <span class="plan-index num">02</span>
+          <h2 id="plan-essential" class="plan-name">Essential</h2>
+        </header>
+        <p class="plan-price">
+          <span class="price-amount">$23.88</span> <span class="price-period">($1.99/mo)</span>
+        </p>
+        <div class="plan-note"><span class="tag">Annual only</span></div>
+        <button
+          id="essential-checkout-button"
+          type="button"
+          class="btn btn--line btn--block paddle_button cta-button"
+          data-items='[{"priceId":"pri_01jjevdqjqnxdyt62xxh64ztfm","quantity":1}]'
+        >
+          Get started <span class="arrow" aria-hidden="true">→</span>
+        </button>
+        <ul class="features" role="list">
+          <li><svg viewBox="0 0 16 16" aria-hidden="true"><path d={check} /></svg><span>Up to <strong>5</strong> automation rules</span></li>
+          <li><svg viewBox="0 0 16 16" aria-hidden="true"><path d={check} /></svg><span>Up to <strong>100</strong> attachments per month</span></li>
+          <li><svg viewBox="0 0 16 16" aria-hidden="true"><path d={check} /></svg><span>Processing every <strong>3 hours</strong></span></li>
+        </ul>
+      </article>
+
+      <!-- Pro -->
+      <article class="plan plan--featured" aria-labelledby="plan-pro">
+        <header class="plan-head">
+          <span class="plan-index num">03</span>
+          <h2 id="plan-pro" class="plan-name">Pro</h2>
+          <span class="tag tag--accent">Most popular</span>
+        </header>
+        <p class="plan-price" id="pro-price" aria-live="polite">
+          <span class="price-amount">$59.88</span> <span class="price-period">($4.99/mo)</span>
+        </p>
+        <div class="plan-note">
+          <fieldset class="billing">
+            <legend class="visually-hidden">Billing period</legend>
+            <label><input type="radio" name="pro-billing" value="annual" checked /><span>Annual (Save 55%)</span></label>
+            <label><input type="radio" name="pro-billing" value="monthly" /><span>Monthly</span></label>
+          </fieldset>
+        </div>
+        <button
+          id="pro-checkout-button"
+          type="button"
+          class="btn btn--accent btn--block paddle_button cta-button"
+          data-items='[{"priceId":"pri_01kjfswp1vfxyb9z44rdygmj7e","quantity":1}]'
+        >
+          Get started <span class="arrow" aria-hidden="true">→</span>
+        </button>
+        <ul class="features" role="list">
+          <li><svg viewBox="0 0 16 16" aria-hidden="true"><path d={check} /></svg><span>Up to <strong>10</strong> automation rules</span></li>
+          <li><svg viewBox="0 0 16 16" aria-hidden="true"><path d={check} /></svg><span>Up to <strong>3000</strong> attachments per month</span></li>
+          <li><svg viewBox="0 0 16 16" aria-hidden="true"><path d={check} /></svg><span>Processing every <strong>1 hour</strong></span></li>
+        </ul>
+      </article>
+    </div>
+
+    <!-- Custom -->
+    <div class="grid custom">
+      <div class="custom-head">
+        <span class="plan-index num">04</span>
+        <h2 class="h2 custom-title">Custom</h2>
+      </div>
+      <p class="lead custom-text">For teams that need custom limits, domain-wide licensing, retrospective downloads.</p>
+      <a class="btn btn--ink custom-btn" href="/#contact">Contact us <span class="arrow" aria-hidden="true">→</span></a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .pricing {
+    padding-block: clamp(2.5rem, 1rem + 5vw, 6rem) var(--section);
+  }
+  .page-head {
+    row-gap: var(--s-2);
+    margin-bottom: clamp(3rem, 2rem + 4vw, 6rem);
+  }
+  .page-head .label {
+    grid-column: 1 / -1;
+  }
+  .page-head h1 {
+    grid-column: 1 / -1;
+  }
+  .accent {
+    color: var(--accent);
+  }
+
+  /* plans — three ruled columns */
+  .plans {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-top: var(--rule-ink);
+  }
+  .plan {
+    display: grid;
+    grid-template-rows: auto auto 3.5rem auto 1fr;
+    align-content: start;
+    padding: var(--s-3) var(--s-4) var(--s-4);
+  }
+  .plan:first-child {
+    padding-left: 0;
+  }
+  .plan:last-child {
+    padding-right: 0;
+  }
+  .plan + .plan {
+    border-left: var(--rule-hair);
+  }
+  .plan-head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--s-2);
+    flex-wrap: wrap;
+  }
+  .plan-index {
+    font-size: var(--fs-s);
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .plan-name {
+    font-family: var(--font-display);
+    font-size: var(--fs-xl);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .plan-head .tag {
+    margin-left: auto;
+  }
+  .plan-price {
+    margin-top: var(--s-6);
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.625rem;
+  }
+  .plan-price :global(.price-amount) {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 2rem + 3vw, 4.75rem);
+    font-weight: 600;
+    letter-spacing: -0.045em;
+    line-height: 0.9;
+    font-variant-numeric: tabular-nums;
+  }
+  .plan-price :global(.price-period) {
+    font-size: var(--fs-m);
+    color: var(--ink-3);
+  }
+  .plan-note {
+    display: flex;
+    align-items: center;
+  }
+  .tag {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: var(--track-label);
+    text-transform: uppercase;
+    border: 1px solid var(--ink);
+    line-height: 1.4;
+  }
+  .tag--accent {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--on-accent);
+  }
+
+  /* annual / monthly */
+  .billing {
+    display: inline-flex;
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--ink);
+  }
+  .billing label {
+    position: relative;
+    cursor: pointer;
+  }
+  .billing input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    margin: 0;
+    cursor: pointer;
+  }
+  .billing span {
+    display: block;
+    padding: 0.3rem 0.625rem;
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    transition: background-color 150ms var(--ease), color 150ms var(--ease);
+  }
+  .billing input:checked + span {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .billing input:focus-visible + span {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .features {
+    margin-top: var(--s-4);
+    border-top: 1px solid var(--ink);
+  }
+  .features li {
+    display: flex;
+    gap: 0.75rem;
+    align-items: baseline;
+    padding-block: 0.75rem;
+    border-bottom: var(--rule-hair);
+    font-size: var(--fs-body);
+    color: var(--ink-2);
+  }
+  .features strong {
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .features svg {
+    flex: none;
+    width: 0.875rem;
+    height: 0.875rem;
+    transform: translateY(0.1em);
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2;
+  }
+
+  /* custom row */
+  .custom {
+    margin-top: var(--s-12);
+    padding-top: var(--s-3);
+    border-top: var(--rule-ink);
+    row-gap: var(--s-3);
+    align-items: baseline;
+  }
+  .custom-head {
+    grid-column: 1 / span 4;
+    display: flex;
+    align-items: baseline;
+    gap: var(--s-2);
+  }
+  .custom-text {
+    grid-column: 5 / span 5;
+    max-width: 34ch;
+  }
+  .custom-btn {
+    grid-column: 10 / -1;
+    justify-self: end;
+    align-self: start;
+  }
+
+  @media (max-width: 960px) {
+    .plans {
+      grid-template-columns: minmax(0, 1fr);
+      border-top: 0;
+    }
+    .plan,
+    .plan:first-child,
+    .plan:last-child {
+      padding: var(--s-3) 0 var(--s-8);
+      border-top: var(--rule-ink);
+      border-left: 0 !important;
+      grid-template-rows: auto;
+    }
+    .plan-price {
+      margin-top: var(--s-4);
+    }
+    .plan-note {
+      min-height: 3.5rem;
+    }
+    .custom-head,
+    .custom-text,
+    .custom-btn {
+      grid-column: 1 / -1;
+      justify-self: start;
+    }
+  }
+</style>
