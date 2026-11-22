@@ -4,8 +4,8 @@ The marketing site for Attachment Hippo, built with [Astro](https://astro.build)
 
 **Look:** tall condensed display type (Antonio), a friendly sans for reading (Figtree) and mono
 labels (Chivo Mono). Pages are stacks of big rounded panels — pastel gradients, white, grey — on
-black, with a peach accent. Imagery is flat, outlined vector art (no photos) that moves with CSS
-and SVG animation; it all stops for visitors who prefer reduced motion.
+black, with a peach accent. Imagery is soft, glowing "aura" illustrations (no photos) that drift
+slowly; motion stops for visitors who prefer reduced motion.
 
 ## Run it
 
@@ -26,10 +26,10 @@ src/
 ├── site.config.ts          links, email, install URL, nav, analytics IDs  ← edit here first
 ├── styles/
 │   ├── global.css          design tokens, panels, type scale, buttons, marquee
-│   ├── illustrations.css   the illustration animations
+│   ├── aura.css            the aura illustration look + motion
 │   └── article.css         blog article blocks (class contract for post bodies)
-├── components/             Header, Footer, Logo, Illo (inline SVG), HeroScene, Marquee, Stamp
-├── illustrations/          vector icons from Figma (see "Illustrations" below)
+├── components/             Header, Footer, Logo, AuraIcon, AuraHippo, HeroScene, Marquee, Stamp
+├── illustrations/          source shapes from Figma (see "Illustrations" below)
 ├── layouts/Base.astro      <head>, SEO/OG tags, analytics, header + footer
 ├── pages/
 │   ├── index.astro         home: hero, use cases, contact
@@ -68,17 +68,50 @@ before (the email is read and stripped from the URL before analytics load).
 The title, date, author, reading time and cover are rendered by the template, so the body starts
 with the lead paragraph. Reading time is computed (words ÷ 220).
 
-### Illustrations
+### Illustrations — the "aura" style
 
-The icons in `src/illustrations/` were generated with Figma's vector generator in the file
-[Attachment Hippo — icons & illustrations](https://www.figma.com/design/oEAZXMsLboi305HbV4zTNN)
-and cleaned with `scripts/import-figma-svg.py`. Each Figma layer becomes a `data-part="…"` hook
-that `src/styles/illustrations.css` animates. To add one: generate it in Figma with named layers,
-export it as SVG, run the script, then use `<Illo name="my-icon" />`.
+Soft silhouettes lit from inside by blurred colour, with fine grain: a light zone on top, a deep
+core, warm colour where the form meets the ground, soft edges, no outlines. Colours come only from
+the site palette.
 
-House style for new ones: chunky rounded shapes, 8 px black outline on a 256 px canvas, flat fills
-from the palette (lilac `#C9B6F2`, peach `#FFB38A`, mint `#BDEFD8`, butter `#FFE7A3`, sky `#BFE3FF`),
-no gradients or shadows.
+How it is built:
+
+- **Shapes** come from the icons Figma generated (`src/illustrations/*.svg`, file
+  [Attachment Hippo — icons & illustrations](https://www.figma.com/design/oEAZXMsLboi305HbV4zTNN),
+  cleaned with `scripts/import-figma-svg.py`). Filled shapes become soft-edged masks; line-only
+  shapes (dollar sign, text lines, stems) become soft marks on top.
+- **Recipes** in `src/lib/aura-recipes.ts` say which part becomes which glowing layer and which
+  palette lights it (`lavender`, `violet`, `peach`, `butter`, `mint`, `sky`, `paper` — defined in
+  `src/lib/aura.ts`).
+- **Rendering**: `<AuraIcon name="uc-invoice" />`. Each colour blob is its own blurred element and
+  only transforms animate, so motion stays cheap; animations run only while the illustration is on
+  screen and never for reduced motion. Part motion (the invoice dropping, leaves swaying…) is in
+  `src/styles/aura.css`.
+- **The hippo** is hand-tuned in `src/components/AuraHippo.astro`.
+
+To add one: generate it in Figma with named layers (any flat style — only the shapes are used),
+export as SVG, run the import script, add a recipe, use `<AuraIcon name="…" />`. Preview every
+illustration at `/lab/aura/` (not linked, not in the sitemap).
+
+### Colour themes
+
+`src/lib/themes.ts` defines four themes — **Pastel** (current), **Aurora** (closest to the original
+site: sky → pink → cream on a light page), **Lagoon** (teal, indigo, orange) and **Sunset** (apricot,
+rose, plum). Each sets the page and panel colours, the accent, and the colours that light the
+illustrations, so a theme recolours everything.
+
+While deciding, a floating **Colours** picker shows on every page (bottom left). Picking a theme adds
+`?theme=…` to the URL — send that link and others see the same version; "Copy link to this theme"
+does it in one click. When you've chosen: set `defaultTheme` and `themeSwitcher: false` in
+`src/site.config.ts`.
+
+### Contact form
+
+`src/components/ContactForm.astro` — name, email, message. With no form service connected it opens
+the visitor's email app with the message pre-filled. To receive messages directly, set
+`contactForm.endpoint` in `src/site.config.ts` to a form service URL (Formspree, Web3Forms, …) and add
+that origin to `form-action` and `connect-src` in `firebase.json`. `/?topic=custom#contact` (used by
+the pricing page's Custom plan) puts the topic in the subject line.
 
 ### Logo
 

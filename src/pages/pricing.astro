@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import Illo from '../components/Illo.astro';
+import AuraIcon from '../components/AuraIcon.astro';
 import { site } from '../site.config';
 
 const check = 'M3 8.5l3.2 3L13 4.5';
@@ -28,7 +28,7 @@ const check = 'M3 8.5l3.2 3L13 4.5';
       <div class="plans">
         <!-- Beginner -->
         <article class="plan" aria-labelledby="plan-beginner" data-reveal>
-          <div class="plan-art sheet--mint"><Illo name="plan-beginner" class="plan-illo" /></div>
+          <div class="plan-art sheet--mint"><AuraIcon name="plan-beginner" class="plan-illo" /></div>
           <div class="meta-row mono"><span>Plan 01</span><span>Forever</span></div>
           <h2 id="plan-beginner" class="plan-name">Beginner</h2>
           <p class="plan-price"><span class="price-amount">Free</span></p>
@@ -58,7 +58,7 @@ const check = 'M3 8.5l3.2 3L13 4.5';
 
         <!-- Essential -->
         <article class="plan" aria-labelledby="plan-essential" data-reveal>
-          <div class="plan-art sheet--sky"><Illo name="plan-essential" class="plan-illo" /></div>
+          <div class="plan-art sheet--sky"><AuraIcon name="plan-essential" class="plan-illo" /></div>
           <div class="meta-row mono"><span>Plan 02</span><span>Annual only</span></div>
           <h2 id="plan-essential" class="plan-name">Essential</h2>
           <p class="plan-price">
@@ -83,7 +83,7 @@ const check = 'M3 8.5l3.2 3L13 4.5';
         <!-- Pro -->
         <article class="plan plan--featured" aria-labelledby="plan-pro" data-reveal>
           <div class="plan-art sheet--butter">
-            <Illo name="plan-pro" class="plan-illo" />
+            <AuraIcon name="plan-pro" class="plan-illo" />
             <span class="badge">Most popular</span>
           </div>
           <div class="meta-row mono"><span>Plan 03</span><span>Annual or monthly</span></div>
@@ -116,13 +116,13 @@ const check = 'M3 8.5l3.2 3L13 4.5';
 
       <!-- Custom -->
       <div class="custom" data-reveal>
-        <div class="custom-art"><Illo name="plan-custom" class="plan-illo" /></div>
+        <div class="custom-art"><AuraIcon name="plan-custom" class="plan-illo" /></div>
         <div class="custom-body">
           <div class="meta-row mono"><span>Plan 04</span><span>Teams</span></div>
           <h2 class="plan-name">Custom</h2>
           <p class="lead">For teams that need custom limits, domain-wide licensing, retrospective downloads.</p>
         </div>
-        <a class="btn btn--ink btn--lg custom-btn" href="/#contact">Contact us <span class="arrow" aria-hidden="true">→</span></a>
+        <a class="btn btn--ink btn--lg custom-btn" href="/?topic=custom#contact">Contact us <span class="arrow" aria-hidden="true">→</span></a>
       </div>
     </div>
   </section>

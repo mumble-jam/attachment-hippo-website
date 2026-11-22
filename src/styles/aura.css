@@ -1,0 +1,273 @@
+/* =====================================================================
+   AURA ILLUSTRATIONS
+   Soft silhouettes lit from inside by blurred colour blobs, with grain.
+   Each blob is its own element with `filter: blur()`; only transforms
+   animate, so the browser blurs once and just moves the result.
+   Animations run only while the illustration is on screen
+   ([data-on], set by AuraIcon's script) and never for reduced motion.
+   ===================================================================== */
+
+.aura-scene {
+  container-type: inline-size;
+  position: relative;
+  width: 100%;
+  aspect-ratio: var(--ratio, 1);
+}
+.aura-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.aura-body {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--base);
+  -webkit-mask: var(--mask) center / 100% 100% no-repeat;
+  mask: var(--mask) center / 100% 100% no-repeat;
+  isolation: isolate;
+}
+/* grain */
+.aura-body::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 1.4 -.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
+  mix-blend-mode: soft-light;
+  opacity: 0.8;
+}
+.aura-blob,
+.aura-dot {
+  position: absolute;
+  border-radius: 50%;
+  translate: -50% -50%;
+}
+.aura-blob {
+  filter: blur(var(--blur, 5cqw));
+  transform: scaleX(var(--sx, 1));
+}
+.aura-dot {
+  filter: blur(0.35cqw);
+}
+.aura-ground {
+  position: absolute;
+  height: 7%;
+  translate: -50% -55%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(40, 24, 90, 0.16), rgba(40, 24, 90, 0) 100%);
+  pointer-events: none;
+}
+.aura-details {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* ---------- motion ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .drift-a {
+    animation: aura-a 11s ease-in-out infinite alternate;
+  }
+  .drift-b {
+    animation: aura-b 14s ease-in-out infinite alternate;
+  }
+  .drift-c {
+    animation: aura-c 9s ease-in-out infinite alternate;
+  }
+}
+/* pause everything that is off screen */
+.aura-scene:not([data-on]) *,
+.aura-scene:not([data-on]) {
+  animation-play-state: paused !important;
+}
+
+@keyframes aura-a {
+  from {
+    transform: translate(0, 0) scaleX(var(--sx, 1)) scale(1);
+  }
+  to {
+    transform: translate(5%, -4%) scaleX(var(--sx, 1)) scale(1.14);
+  }
+}
+@keyframes aura-b {
+  from {
+    transform: translate(0, 0) scaleX(var(--sx, 1)) scale(1.05);
+  }
+  to {
+    transform: translate(-6%, 5%) scaleX(var(--sx, 1)) scale(0.9);
+  }
+}
+@keyframes aura-c {
+  from {
+    transform: translate(0, 0) scaleX(var(--sx, 1)) scale(0.94);
+  }
+  to {
+    transform: translate(4%, 6%) scaleX(var(--sx, 1)) scale(1.1);
+  }
+}
+
+/* ---------- part motion (per illustration) ----------
+   Each layer exposes its box edges as --l --t --r --b (% of the scene),
+   so pivots can sit on the right spot: e.g. a leaf sways from its base. */
+@media (prefers-reduced-motion: no-preference) {
+  .aura--uc-invoice [data-part~='invoice'] {
+    animation: part-drop 3.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  }
+  .aura--uc-invoice [data-part~='folder-front'] {
+    transform-origin: 50% var(--b);
+    animation: part-squash 3.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  }
+
+  .aura--uc-contract [data-part~='pen'] {
+    transform-origin: var(--l) var(--b);
+    animation: part-sign 2.4s ease-in-out infinite;
+  }
+  .aura--uc-contract [data-part~='seal'] {
+    transform-origin: calc((var(--l) + var(--r)) / 2) calc((var(--t) + var(--b)) / 2);
+    animation: part-pop 2.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  }
+
+  .aura--uc-team [data-part^='person'] {
+    animation: part-bob 2.4s ease-in-out infinite;
+  }
+  .aura--uc-team [data-part~='person-center'] {
+    animation-delay: -0.8s;
+  }
+  .aura--uc-team [data-part~='person-right'] {
+    animation-delay: -1.6s;
+  }
+  .aura--uc-team [data-part~='slide'] {
+    animation: part-rise 4.8s ease-in-out infinite;
+  }
+
+  .aura--uc-photo [data-part~='cloud'] {
+    animation: part-drift 6s ease-in-out infinite;
+  }
+  .aura--uc-photo [data-part~='arrow'] {
+    animation: part-upload 2.4s ease-in-out infinite;
+  }
+  .aura--uc-photo [data-part~='sun'] {
+    transform-origin: calc((var(--l) + var(--r)) / 2) calc((var(--t) + var(--b)) / 2);
+    animation: part-pulse 3s ease-in-out infinite;
+  }
+
+  .aura--uc-education [data-part~='cap'],
+  .aura--uc-education [data-part~='tassel'] {
+    transform-origin: 50% var(--b);
+    animation: part-toss 3.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  }
+
+  [class*='aura--plan'] [data-part~='left-leaf'],
+  [class*='aura--plan'] [data-part~='leaf-upper-left'],
+  [class*='aura--plan'] [data-part~='leaf-lower-left'] {
+    transform-origin: var(--r) var(--b);
+    animation: part-sway-l 3.2s ease-in-out infinite;
+  }
+  [class*='aura--plan'] [data-part~='right-leaf'],
+  [class*='aura--plan'] [data-part~='leaf-upper-right'],
+  [class*='aura--plan'] [data-part~='leaf-lower-right'] {
+    transform-origin: var(--l) var(--b);
+    animation: part-sway-r 3.2s ease-in-out infinite;
+  }
+  [class*='aura--plan'] [data-part~='leaf-lower-left'],
+  [class*='aura--plan'] [data-part~='leaf-lower-right'] {
+    animation-delay: -1.2s;
+  }
+  [class*='aura--plan'] [data-part~='bud'],
+  [class*='aura--plan'] [data-part^='flower'] {
+    transform-origin: calc((var(--l) + var(--r)) / 2) calc((var(--t) + var(--b)) / 2);
+    animation: part-pulse 2.8s ease-in-out infinite;
+  }
+  [class*='aura--plan'] [data-part~='flower-right'] {
+    animation-delay: -0.9s;
+  }
+  [class*='aura--plan'] [data-part~='flower-lower'] {
+    animation-delay: -1.8s;
+  }
+  [class*='aura--plan'] [data-part~='crown'] {
+    transform-origin: 50% var(--b);
+    animation: part-breathe 4s ease-in-out infinite;
+  }
+  .aura--plan-custom [data-part^='plant'] {
+    transform-origin: 50% 92%;
+    animation: part-breathe 3.6s ease-in-out infinite;
+  }
+  .aura--plan-custom [data-part~='plant-peach'] {
+    animation-delay: -1.2s;
+  }
+  .aura--plan-custom [data-part~='plant-yellow'] {
+    animation-delay: -2.4s;
+  }
+
+  .aura--part-envelope [data-part~='letter'],
+  .aura--part-envelope [data-part~='paperclip'] {
+    animation: part-peek 3s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  }
+}
+
+@keyframes part-drop {
+  0%, 20% { transform: translateY(0); }
+  45%, 60% { transform: translateY(9%); }
+  85%, 100% { transform: translateY(0); }
+}
+@keyframes part-squash {
+  0%, 38% { transform: scale(1, 1); }
+  46% { transform: scale(1.02, 0.96); }
+  56%, 100% { transform: scale(1, 1); }
+}
+@keyframes part-sign {
+  0%, 100% { transform: rotate(0deg) translateX(0); }
+  25% { transform: rotate(-6deg) translateX(-1.5%); }
+  50% { transform: rotate(4deg) translateX(1%); }
+  75% { transform: rotate(-3deg) translateX(-0.5%); }
+}
+@keyframes part-pop {
+  0%, 60%, 100% { transform: scale(1); }
+  70% { transform: scale(1.12) rotate(-8deg); }
+  80% { transform: scale(0.97); }
+}
+@keyframes part-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3%); }
+}
+@keyframes part-rise {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2.5%); }
+}
+@keyframes part-drift {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(2.5%); }
+}
+@keyframes part-upload {
+  0% { transform: translateY(4%); opacity: 0; }
+  30%, 70% { opacity: 1; }
+  100% { transform: translateY(-6%); opacity: 0; }
+}
+@keyframes part-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+}
+@keyframes part-toss {
+  0%, 55%, 100% { transform: translateY(0) rotate(0deg); }
+  70% { transform: translateY(-5%) rotate(-5deg); }
+  82% { transform: translateY(0) rotate(1.5deg); }
+}
+@keyframes part-sway-l {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-7deg); }
+}
+@keyframes part-sway-r {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(7deg); }
+}
+@keyframes part-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03, 1.05); }
+}
+@keyframes part-peek {
+  0%, 15%, 100% { transform: translateY(0); }
+  40%, 65% { transform: translateY(-5%); }
+}

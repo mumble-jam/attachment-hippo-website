@@ -20,6 +20,7 @@ export default defineConfig({
   devToolbar: { enabled: false },
   integrations: [
     sitemap({
+      filter: (page) => !page.includes('/lab/'),
       // Match the real URLs produced by `format: 'preserve'`.
       serialize(item) {
         if (/\/(pricing|legal\/[a-z_]+)$/.test(item.url)) item.url += '.html';

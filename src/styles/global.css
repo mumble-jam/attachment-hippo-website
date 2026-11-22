@@ -68,11 +68,11 @@ html {
   text-size-adjust: 100%;
   scroll-behavior: smooth;
   scroll-padding-top: calc(var(--header-h) + 1rem);
-  background: var(--ink);
+  background: var(--page-bg, var(--ink));
 }
 body {
   margin: 0;
-  background: var(--ink);
+  background: var(--page-bg, var(--ink));
   color: var(--ink);
   font-family: var(--font-text);
   font-size: var(--fs-m);
@@ -368,7 +368,7 @@ button {
 .marquee {
   overflow: hidden;
   padding-block: clamp(3rem, 2rem + 3vw, 5.5rem);
-  color: var(--paper);
+  color: var(--band-fg, var(--paper));
   mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
 }
 .marquee-track {

@@ -1,0 +1,37 @@
+---
+/** The hippo in the "aura" style, coloured from the site palette. */
+import AuraFigure, { type Blob } from './AuraFigure.astro';
+import mark from '../../brand/tools/mark.json';
+
+interface Props {
+  class?: string;
+  label?: string;
+}
+const { class: className, label } = Astro.props;
+
+// positions are % of the 1000 × 581 mark box
+const blobs: Blob[] = [
+  { x: 24, y: 30, r: 24, color: 'var(--h-back)', drift: 'b' }, // back — sky
+  { x: 5, y: 62, r: 16, color: 'var(--h-rump)', drift: 'c', delay: -3 }, // rump — mint
+  { x: 44, y: 55, r: 22, color: 'var(--h-core)', drift: 'a', delay: -5 }, // core — violet
+  { x: 62, y: 52, r: 17, color: 'var(--h-shoulder)', drift: 'c', delay: -2 }, // shoulder — brand lavender
+  { x: 76, y: 28, r: 15, color: 'var(--h-head)', drift: 'a', delay: -7 }, // head glow — butter
+  { x: 91, y: 56, r: 15, color: 'var(--h-snout)', drift: 'b', delay: -4 }, // snout — peach
+  { x: 62, y: 4, r: 7, color: 'var(--h-ear)' }, // ear
+  { x: 40, y: 14, r: 9, sx: 3.2, color: 'var(--h-light)', opacity: 0.75, blur: 3.5, drift: 'c', delay: -8 }, // light along the back
+  { x: 79, y: 24, r: 8, color: 'var(--h-glow)', blur: 3.5, drift: 'b', delay: -5 }, // brightest point of the head
+  { x: 33, y: 80, r: 10, sx: 1.6, color: 'var(--h-belly)', opacity: 0.8, blur: 3.5 }, // warm belly, between the legs
+  { x: 14, y: 93, r: 10, color: 'var(--h-leg)', sx: 1.3, blur: 2.6, drift: 'c', delay: -6 }, // back leg — vivid peach
+  { x: 54, y: 93, r: 11, color: 'var(--h-leg)', sx: 1.3, blur: 2.6, drift: 'a', delay: -1 }, // front leg
+];
+---
+
+<AuraFigure
+  d={mark.body}
+  viewBox={mark.viewBox}
+  base="var(--h-base)"
+  blobs={blobs}
+  dots={[{ x: 70.8, y: 30, r: 1.5, color: 'rgba(40, 24, 90, 0.5)' }]}
+  class={className}
+  label={label}
+/>

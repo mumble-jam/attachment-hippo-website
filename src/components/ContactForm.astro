@@ -1,0 +1,246 @@
+---
+/**
+ * Contact form.
+ *
+ * Sending: set `site.contactForm.endpoint` (src/site.config.ts) to a form service
+ * URL (Formspree, Web3Forms, Basin, a Firebase Function…) and messages are POSTed
+ * there. Until then — or if the request fails — the form opens the visitor's email
+ * app with the message already written to `site.email`, so it always works.
+ * Remember to allow the endpoint's origin in the CSP (firebase.json: form-action,
+ * connect-src).
+ */
+import { site } from '../site.config';
+
+const endpoint = site.contactForm.endpoint;
+---
+
+<form
+  class="cform"
+  method="post"
+  action={endpoint || `mailto:${site.email}`}
+  data-endpoint={endpoint}
+  data-email={site.email}
+  novalidate
+>
+  <div class="row">
+    <label class="field">
+      <span class="visually-hidden">Your name</span>
+      <input name="name" type="text" autocomplete="name" placeholder="Your name" required maxlength="120" />
+      <span class="field-error" aria-live="polite"></span>
+    </label>
+    <label class="field">
+      <span class="visually-hidden">Email</span>
+      <input name="email" type="email" autocomplete="email" placeholder="Email" required maxlength="200" />
+      <span class="field-error" aria-live="polite"></span>
+    </label>
+  </div>
+
+  <label class="field">
+    <span class="visually-hidden">Message</span>
+    <textarea name="message" rows="3" placeholder="Your message" required maxlength="5000"></textarea>
+    <span class="field-error" aria-live="polite"></span>
+  </label>
+
+  <!-- set from /?topic=… (e.g. the pricing page's Custom plan link); used in the subject line -->
+  <input type="hidden" name="topic" value="question" />
+
+  <!-- spam trap: real people never see or fill this -->
+  <label class="trap" aria-hidden="true">
+    Company <input name="company" type="text" tabindex="-1" autocomplete="off" />
+  </label>
+
+  <div class="actions">
+    <button class="btn btn--ink btn--lg" type="submit">
+      <span class="btn-text">Send</span>
+      <span class="arrow" aria-hidden="true">→</span>
+    </button>
+    <p class="status" role="status" aria-live="polite"></p>
+  </div>
+</form>
+
+<script>
+  type Fields = { name: string; email: string; topic: string; message: string; company: string };
+
+  const LABELS: Record<string, string> = {
+    question: 'General question',
+    custom: 'Custom plan',
+    billing: 'Billing & refunds',
+    feedback: 'Feedback',
+  };
+
+  document.querySelectorAll<HTMLFormElement>('form.cform').forEach((form) => {
+    const status = form.querySelector<HTMLElement>('.status')!;
+    const button = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
+    const btnText = button.querySelector<HTMLElement>('.btn-text')!;
+    const endpoint = form.dataset.endpoint ?? '';
+    const email = form.dataset.email ?? '';
+
+    // /?topic=custom#contact preselects a topic (used by the pricing page)
+    const pre = new URLSearchParams(location.search).get('topic');
+    const topic = form.elements.namedItem('topic') as HTMLInputElement;
+    if (pre && pre in LABELS) topic.value = pre;
+
+    const setError = (name: string, msg: string) => {
+      const input = form.elements.namedItem(name) as HTMLInputElement;
+      const out = input.closest('.field')?.querySelector<HTMLElement>('.field-error');
+      input.setAttribute('aria-invalid', msg ? 'true' : 'false');
+      if (out) out.textContent = msg;
+    };
+
+    const validate = (f: Fields) => {
+      let ok = true;
+      const check = (name: keyof Fields, cond: boolean, msg: string) => {
+        setError(name, cond ? '' : msg);
+        if (!cond) ok = false;
+      };
+      check('name', f.name.trim().length > 0, 'Please tell us your name.');
+      check('email', /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email.trim()), 'Please enter a valid email address.');
+      check('message', f.message.trim().length >= 5, 'Please write a short message.');
+      return ok;
+    };
+
+    const openMailApp = (f: Fields) => {
+      const subject = `${LABELS[f.topic] ?? 'Message'} — ${f.name.trim()}`;
+      const body = `${f.message.trim()}\n\n—\n${f.name.trim()} <${f.email.trim()}>`;
+      window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    };
+
+    const done = (msg: string) => {
+      form.classList.add('is-sent');
+      status.textContent = msg;
+      form.reset();
+      topic.value = pre && pre in LABELS ? pre : 'question';
+    };
+
+    form.addEventListener('input', (e) => {
+      const t = e.target as HTMLInputElement;
+      if (t.getAttribute('aria-invalid') === 'true') setError(t.name, '');
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = new FormData(form);
+      const f = Object.fromEntries(data) as unknown as Fields;
+      status.textContent = '';
+      form.classList.remove('is-sent', 'is-error');
+      if (!validate(f)) {
+        (form.querySelector('[aria-invalid=true]') as HTMLElement | null)?.focus();
+        return;
+      }
+      if (f.company) return done('Thanks! Your message is on its way.'); // bot
+
+      if (!endpoint) {
+        openMailApp(f);
+        status.textContent = 'Your email app should open with the message ready — just press send.';
+        return;
+      }
+
+      button.disabled = true;
+      btnText.textContent = 'Sending…';
+      try {
+        data.set('_subject', `${LABELS[f.topic] ?? 'Message'} — ${f.name.trim()}`);
+        const res = await fetch(endpoint, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
+        if (!res.ok) throw new Error(String(res.status));
+        done('Thanks! Your message is on its way — we’ll reply as soon as we can.');
+      } catch {
+        form.classList.add('is-error');
+        status.textContent = 'That didn’t go through. Opening your email app instead…';
+        openMailApp(f);
+      } finally {
+        button.disabled = false;
+        btnText.textContent = 'Send';
+      }
+    });
+  });
+</script>
+
+<style>
+  .cform {
+    display: grid;
+    gap: 0.5rem;
+  }
+  .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 var(--gutter);
+  }
+  .field {
+    display: grid;
+  }
+  input[type='text'],
+  input[type='email'],
+  textarea {
+    width: 100%;
+    padding: 1rem 0 0.75rem;
+    font: inherit;
+    font-size: var(--fs-l);
+    color: var(--ink);
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--line-strong);
+    border-radius: 0;
+    transition: border-color 200ms var(--ease);
+  }
+  textarea {
+    resize: none;
+    field-sizing: content;
+    min-height: 3.5rem;
+    max-height: 16rem;
+  }
+  ::placeholder {
+    color: var(--ink-3);
+    opacity: 1;
+  }
+  input:focus-visible,
+  textarea:focus-visible {
+    outline: none;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: calc(0.75rem - 1px);
+  }
+  [aria-invalid='true'] {
+    border-bottom-color: #c4472c;
+  }
+  .field-error {
+    padding-top: 0.375rem;
+    font-size: 0.8125rem;
+    color: #b23a20;
+  }
+  .field-error:empty {
+    display: none;
+  }
+
+  .trap {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1.25rem;
+    margin-top: 1.5rem;
+  }
+  .actions .btn[disabled] {
+    opacity: 0.6;
+    cursor: progress;
+  }
+  .status {
+    font-size: var(--fs-s);
+    color: var(--ink-2);
+    max-width: 34ch;
+  }
+  .cform.is-sent .status {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  @media (max-width: 560px) {
+    .row {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

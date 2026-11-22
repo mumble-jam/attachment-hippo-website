@@ -1,0 +1,94 @@
+---
+/**
+ * <AuraIcon name="uc-invoice" />
+ * Renders one of src/illustrations/*.svg in the aura style, following the
+ * recipe in src/lib/aura-recipes.ts.
+ */
+import '../styles/aura.css';
+import { buildLayers } from '../lib/aura';
+import { recipes } from '../lib/aura-recipes';
+
+const files = import.meta.glob<string>('../illustrations/*.svg', { query: '?raw', import: 'default', eager: true });
+
+interface Props {
+  name: string;
+  label?: string;
+  class?: string;
+}
+const { name, label, class: className = '' } = Astro.props;
+const svg = files[`../illustrations/${name}.svg`];
+const recipe = recipes[name];
+if (!svg || !recipe) throw new Error(`AuraIcon: no illustration/recipe for "${name}"`);
+
+const { viewBox, layers, ground } = buildLayers(svg, recipe);
+const [, , vw, vh] = viewBox.split(/\s+/).map(Number);
+const r = (n: number) => +n.toFixed(2);
+---
+
+<div
+  class={`aura-scene aura--${name} ${className}`}
+  style={`--ratio:${vw}/${vh}`}
+  role={label ? 'img' : undefined}
+  aria-label={label}
+  aria-hidden={label ? undefined : 'true'}
+  data-aura
+>
+  <span
+    class="aura-ground"
+    style={`left:${r(ground.x)}%;top:${r(ground.y)}%;width:${r(ground.w)}%`}
+    aria-hidden="true"
+  ></span>
+  {
+    layers.map((L) => (
+      <div
+        class="aura-layer"
+        data-part={L.part}
+        style={`--l:${r(L.box.l)}%;--t:${r(L.box.t)}%;--r:${r(L.box.r)}%;--b:${r(L.box.b)}%`}
+      >
+        {L.blobs.length > 0 && (
+          <div class="aura-body" style={`--mask:${L.mask};--base:${L.base}`}>
+            {L.blobs.map((b) => (
+              <span
+                class={`aura-blob${b.drift ? ` drift-${b.drift}` : ''}`}
+                style={
+                  `left:${r(b.x)}%;top:${r(b.y)}%;width:${r(b.r * 2)}cqw;height:${r(b.r * 2)}cqw;` +
+                  `background:${b.color};--blur:${r(b.blur)}cqw;opacity:${b.opacity ?? 1};animation-delay:${r(b.delay ?? 0)}s`
+                }
+              />
+            ))}
+          </div>
+        )}
+        {L.details.length > 0 && (
+          <svg class="aura-details" viewBox={viewBox} aria-hidden="true">
+            {L.details.map((dt) => (
+              <g
+                fill="none"
+                stroke={dt.color}
+                stroke-opacity={dt.opacity}
+                stroke-width={dt.width}
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                style={`filter:blur(${dt.blur}px)`}
+              >
+                {dt.d.map((d) => (
+                  <path d={d} />
+                ))}
+              </g>
+            ))}
+          </svg>
+        )}
+      </div>
+    ))
+  }
+</div>
+
+<script>
+  // Run the drift only while an illustration is on screen.
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) (e.target as HTMLElement).toggleAttribute('data-on', e.isIntersecting);
+    },
+    { rootMargin: '100px' },
+  );
+  document.querySelectorAll('[data-aura]').forEach((el) => io.observe(el));
+</script>

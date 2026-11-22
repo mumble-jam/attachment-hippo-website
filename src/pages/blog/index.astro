@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Illo from '../../components/Illo.astro';
+import AuraIcon from '../../components/AuraIcon.astro';
 import { getPosts, getBody, readingTime, formatDate, isoDate } from '../../lib/blog';
 import { site } from '../../site.config';
 
@@ -37,7 +37,7 @@ const jsonLd = {
         <h1 id="blog-title" class="h2 intro-title">Blog</h1>
       </div>
       <div class="intro-side">
-        <Illo name="part-envelope" class="intro-illo" />
+        <AuraIcon name="part-envelope" class="intro-illo" />
         <p class="lead">Tips, guides, and insights on Gmail™ automation, productivity, and making the most of your attachments</p>
       </div>
     </div>

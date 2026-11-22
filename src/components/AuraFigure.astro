@@ -1,0 +1,87 @@
+---
+/**
+ * A single hand-tuned aura silhouette (used for the hippo). Same look and CSS
+ * as AuraIcon, but the blobs are placed by hand instead of by a palette.
+ */
+import '../styles/aura.css';
+
+export interface Blob {
+  /** centre, % of the box width / height */
+  x: number;
+  y: number;
+  /** radius, % of the box width */
+  r: number;
+  color: string;
+  drift?: 'a' | 'b' | 'c';
+  delay?: number;
+  opacity?: number;
+  /** horizontal stretch (1 = circle) */
+  sx?: number;
+  /** blur radius in % of width (default 5) — lower = more defined */
+  blur?: number;
+}
+
+interface Props {
+  d: string;
+  viewBox: string;
+  blobs: Blob[];
+  base: string;
+  dots?: { x: number; y: number; r: number; color: string }[];
+  label?: string;
+  class?: string;
+  edge?: number;
+}
+
+const { d, viewBox, blobs, base, dots = [], label, class: className = '', edge = 3 } = Astro.props;
+const [, , vw, vh] = viewBox.split(/\s+/).map(Number);
+
+const maskSvg =
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}" preserveAspectRatio="none">` +
+  `<filter id="e" filterUnits="userSpaceOnUse" x="${-vw * 0.1}" y="${-vh * 0.1}" width="${vw * 1.2}" height="${vh * 1.2}">` +
+  `<feGaussianBlur stdDeviation="${edge}"/></filter>` +
+  `<path d="${d}" fill="#fff" fill-rule="evenodd" filter="url(#e)"/></svg>`;
+const mask = `url("data:image/svg+xml,${encodeURIComponent(maskSvg)}")`;
+---
+
+<div
+  class={`aura-scene ${className}`}
+  style={`--ratio:${vw}/${vh}`}
+  role={label ? 'img' : undefined}
+  aria-label={label}
+  aria-hidden={label ? undefined : 'true'}
+  data-aura
+>
+  <div class="aura-layer">
+    <div class="aura-body" style={`--mask:${mask};--base:${base}`}>
+      {
+        blobs.map((b) => (
+          <span
+            class={`aura-blob${b.drift ? ` drift-${b.drift}` : ''}`}
+            style={
+              `left:${b.x}%;top:${b.y}%;width:${b.r * 2}cqw;height:${b.r * 2}cqw;background:${b.color};` +
+              `opacity:${b.opacity ?? 1};--sx:${b.sx ?? 1};--blur:${b.blur ?? 5}cqw;animation-delay:${b.delay ?? 0}s`
+            }
+          />
+        ))
+      }
+      {
+        dots.map((dt) => (
+          <span
+            class="aura-dot"
+            style={`left:${dt.x}%;top:${dt.y}%;width:${dt.r * 2}cqw;height:${dt.r * 2}cqw;background:${dt.color}`}
+          />
+        ))
+      }
+    </div>
+  </div>
+</div>
+
+<script>
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) (e.target as HTMLElement).toggleAttribute('data-on', e.isIntersecting);
+    },
+    { rootMargin: '100px' },
+  );
+  document.querySelectorAll('[data-aura]').forEach((el) => io.observe(el));
+</script>

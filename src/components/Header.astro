@@ -170,12 +170,12 @@ const isCurrent = (href: string) =>
     flex-wrap: wrap;
     gap: 0.25rem 0.75rem;
     padding: 0.75rem var(--margin);
-    color: rgba(255, 255, 255, 0.78);
+    color: var(--band-fg-muted, rgba(255, 255, 255, 0.78));
     font-size: 0.8125rem;
     text-align: center;
   }
   .announce a {
-    color: var(--paper);
+    color: var(--band-fg, var(--paper));
     font-weight: 700;
     text-decoration: none;
   }

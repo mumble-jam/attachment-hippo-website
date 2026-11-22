@@ -1,93 +1,89 @@
 ---
 /**
- * Animated hero: attachments leave the Gmail envelope, arc over the hippo
- * and land in the Drive folder. Parts come from src/illustrations (Figma-
- * generated), the hippo from brand/tools/mark.json. Files travel with SVG
- * <animateMotion>; everything else is CSS.
+ * Animated hero: glowing attachments leave the Gmail envelope, arc over the
+ * hippo and land in the Drive folder. Envelope, hippo and folder are aura
+ * illustrations; the flying files are SVG (<animateMotion> along the route).
  */
-import mark from '../../brand/tools/mark.json';
-import '../styles/illustrations.css';
+import AuraIcon from './AuraIcon.astro';
+import AuraHippo from './AuraHippo.astro';
 
-const parts = import.meta.glob<string>('../illustrations/*.svg', { query: '?raw', import: 'default', eager: true });
-const inner = (name: string) => parts[`../illustrations/${name}.svg`].replace(/^<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '');
-
-// Eye + nostril, enlarged a little for the outlined illustration style.
-const nums = [...mark.features.matchAll(/M([\d.]+) ([\d.]+)a([\d.]+) ([\d.]+) ([\d.]+)/g)].map((m) => m.slice(1).map(Number));
-const [ex, ey, er] = nums[0];
-const eye = { cx: ex + er, cy: ey, r: er * 1.45 };
-const [nx, ny, nrx, nry, nrot] = nums[1];
-const rad = (nrot * Math.PI) / 180;
-const nostril = { cx: nx + nrx * Math.cos(rad), cy: ny + nrx * Math.sin(rad), rx: nrx * 1.35, ry: nry * 1.35, rot: nrot };
+const W = 1200;
+const H = 440;
+const pct = (v: number, of: number) => `${(v / of) * 100}%`;
 
 const files = [
-  { fill: '#FFB38A', begin: '0s' },
-  { fill: '#BDEFD8', begin: '1.5s' },
-  { fill: '#BFE3FF', begin: '3s' },
+  { id: 'peach', a: 'var(--a-peach-top)', b: 'var(--a-peach-core)', begin: '0s' },
+  { id: 'mint', a: 'var(--a-mint-top)', b: 'var(--a-mint-core)', begin: '1.5s' },
+  { id: 'sky', a: 'var(--a-sky-top)', b: 'var(--a-sky-core)', begin: '3s' },
 ];
-const stars = [
-  { x: 330, y: 92, s: 1, d: '0s' },
-  { x: 610, y: 40, s: 0.7, d: '-1s' },
-  { x: 880, y: 84, s: 0.85, d: '-2s' },
+const glows = [
+  { x: 330, y: 92, r: 14, d: '0s' },
+  { x: 610, y: 36, r: 10, d: '-1s' },
+  { x: 880, y: 84, r: 12, d: '-2s' },
 ];
 ---
 
 <figure class="scene" aria-label="Attachments travel from Gmail to a Google Drive folder automatically">
-  <svg class="scene-svg" viewBox="0 0 1200 440" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <!-- ground -->
-    <path d="M0 418H1200" stroke="currentColor" stroke-width="3" stroke-dasharray="2 14" stroke-linecap="round" opacity="0.5"></path>
+  <div class="scene-stage" style={`aspect-ratio:${W}/${H}`}>
+    <!-- back: ground, route, glows -->
+    <svg class="scene-svg" viewBox={`0 0 ${W} ${H}`} fill="none" aria-hidden="true">
+      <defs>
+        <radialGradient id="glow">
+          <stop offset="0" style="stop-color:var(--a-butter-top)"></stop>
+          <stop offset=".45" style="stop-color:var(--peach);stop-opacity:.9"></stop>
+          <stop offset="1" style="stop-color:var(--peach);stop-opacity:0"></stop>
+        </radialGradient>
+        <radialGradient id="shade">
+          <stop offset="0" stop-color="#28185a" stop-opacity=".22"></stop>
+          <stop offset="1" stop-color="#28185a" stop-opacity="0"></stop>
+        </radialGradient>
+      </defs>
+      <ellipse cx="150" cy="414" rx="118" ry="11" fill="url(#shade)"></ellipse>
+      <ellipse class="scene-hippo-shade" cx="600" cy="420" rx="170" ry="12" fill="url(#shade)"></ellipse>
+      <ellipse cx="1050" cy="414" rx="118" ry="11" fill="url(#shade)"></ellipse>
+      <path id="route" d="M150 220C360 -10 840 -10 1050 232" stroke="#0b0b0b" stroke-width="2.5" stroke-dasharray="2 12" stroke-linecap="round" opacity=".3"></path>
+      {glows.map((g) => <circle class="scene-glow" style={`animation-delay:${g.d}`} cx={g.x} cy={g.y} r={g.r * 2.2} fill="url(#glow)" />)}
+    </svg>
 
-    <!-- route -->
-    <path id="route" d="M150 220C360 -10 840 -10 1050 232" stroke="currentColor" stroke-width="3" stroke-dasharray="10 12" stroke-linecap="round" opacity="0.35"></path>
+    <div class="scene-item scene-envelope" style={`left:${pct(30, W)};top:${pct(176, H)};width:${pct(240, W)}`}>
+      <AuraIcon name="part-envelope" />
+    </div>
+    <div class="scene-item scene-hippo" style={`left:${pct(410, W)};top:${pct(200, H)};width:${pct(380, W)}`}>
+      <AuraHippo />
+    </div>
+    <div class="scene-item scene-folder" style={`left:${pct(930, W)};top:${pct(176, H)};width:${pct(240, W)}`}>
+      <AuraIcon name="part-folder" />
+    </div>
 
-    <!-- sparkles -->
-    {
-      stars.map((st) => (
-        <g transform={`translate(${st.x} ${st.y}) scale(${st.s})`}>
-          <path
-            class="scene-star"
-            style={`animation-delay:${st.d}`}
-            d="M0 -22C3 -6 6 -3 22 0C6 3 3 6 0 22C-3 6 -6 3 -22 0C-6 -3 -3 -6 0 -22Z"
-            fill="#FFAB7B"
-            stroke="currentColor"
-            stroke-width="5"
-            stroke-linejoin="round"
-          ></path>
-        </g>
-      ))
-    }
-
-    <!-- Gmail envelope -->
-    <svg class="illo illo--part-envelope scene-envelope" x="30" y="166" width="250" height="250" viewBox="0 0 256 256" set:html={inner('part-envelope')} />
-
-    <!-- Drive folder -->
-    <svg class="illo illo--part-folder scene-folder" x="920" y="166" width="250" height="250" viewBox="0 0 256 256" set:html={inner('part-folder')} />
-
-    <!-- the hippo -->
-    <g class="scene-hippo-pos" transform="translate(420 212) scale(0.36)">
-      <g class="scene-hippo">
-        <path d={mark.body} fill="#C9B6F2" stroke="currentColor" stroke-width="22" stroke-linejoin="round"></path>
-        <circle cx={eye.cx} cy={eye.cy} r={eye.r} fill="currentColor"></circle>
-        <ellipse cx={nostril.cx} cy={nostril.cy} rx={nostril.rx} ry={nostril.ry} transform={`rotate(${nostril.rot} ${nostril.cx} ${nostril.cy})`} fill="currentColor"></ellipse>
-      </g>
-    </g>
-
-    <!-- flying attachments -->
-    {
-      files.map((f) => (
-        <g class="scene-file" opacity="0">
-          <g class="scene-file-body">
-            <path d="M-26 -34H12L28 -18V30C28 33 26 35 23 35H-26C-29 35 -31 33 -31 30V-29C-31 -32 -29 -34 -26 -34Z" fill={f.fill} stroke="currentColor" stroke-width="6" stroke-linejoin="round"></path>
-            <path d="M12 -34V-18H28" stroke="currentColor" stroke-width="6" stroke-linejoin="round"></path>
-            <path d="M-19 -6H14M-19 8H8M-19 22H12" stroke="currentColor" stroke-width="6" stroke-linecap="round"></path>
+    <!-- front: flying attachments -->
+    <svg class="scene-svg scene-front" viewBox={`0 0 ${W} ${H}`} fill="none" aria-hidden="true">
+      <defs>
+        {
+          files.map((f) => (
+            <radialGradient id={`file-${f.id}`} cx=".35" cy=".25" r=".95">
+              <stop offset="0" style={`stop-color:${f.a}`} />
+              <stop offset="1" style={`stop-color:${f.b}`} />
+            </radialGradient>
+          ))
+        }
+        <filter id="soft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="1.4"></feGaussianBlur></filter>
+      </defs>
+      {
+        files.map((f) => (
+          <g class="scene-file" opacity="0">
+            <g class="scene-file-body" filter="url(#soft)">
+              <path d="M-24 -32H10C12 -32 13 -31.5 14.5 -30L27 -17.5C28.5 -16 29 -15 29 -13V28C29 32 27 34 23 34H-24C-28 34 -30 32 -30 28V-26C-30 -30 -28 -32 -24 -32Z" fill={`url(#file-${f.id})`} />
+              <path d="M-18 -4H16M-18 8H10M-18 20H14" stroke="#fff" stroke-opacity=".7" stroke-width="5" stroke-linecap="round" />
+            </g>
+            <animateMotion dur="4.5s" begin={f.begin} repeatCount="indefinite" calcMode="spline" keyTimes="0;1" keyPoints="0;1" keySplines="0.45 0 0.55 1">
+              <mpath href="#route" />
+            </animateMotion>
+            <animate attributeName="opacity" dur="4.5s" begin={f.begin} repeatCount="indefinite" values="0;1;1;0" keyTimes="0;0.1;0.88;1" />
           </g>
-          <animateMotion dur="4.5s" begin={f.begin} repeatCount="indefinite" calcMode="spline" keyTimes="0;1" keyPoints="0;1" keySplines="0.45 0 0.55 1">
-            <mpath href="#route"></mpath>
-          </animateMotion>
-          <animate attributeName="opacity" dur="4.5s" begin={f.begin} repeatCount="indefinite" values="0;1;1;0" keyTimes="0;0.1;0.9;1"></animate>
-        </g>
-      ))
-    }
-  </svg>
+        ))
+      }
+    </svg>
+  </div>
 
   <figcaption class="scene-labels">
     <span><span class="mono">Gmail™</span><span class="muted">Your inbox</span></span>
@@ -98,12 +94,24 @@ const stars = [
 <style>
   .scene {
     position: relative;
-    color: var(--ink);
+  }
+  .scene-stage {
+    position: relative;
+    width: 100%;
   }
   .scene-svg {
+    position: absolute;
+    inset: 0;
     width: 100%;
-    height: auto;
+    height: 100%;
     overflow: visible;
+  }
+  .scene-front {
+    z-index: 2;
+  }
+  .scene-item {
+    position: absolute;
+    z-index: 1;
   }
   .scene-labels {
     display: flex;
@@ -123,27 +131,30 @@ const stars = [
 
   @media (prefers-reduced-motion: no-preference) {
     .scene-hippo {
-      transform-box: fill-box;
       transform-origin: 50% 100%;
       animation: hippo-walk 0.75s ease-in-out infinite alternate;
     }
     .scene-file-body {
-      animation: file-spin 4.5s ease-in-out infinite;
+      animation: file-spin 2.25s ease-in-out infinite;
     }
-    .scene-star {
+    .scene-hippo-shade {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: shade-breathe 0.75s ease-in-out infinite alternate;
+    }
+    .scene-glow {
       transform-box: fill-box;
       transform-origin: center;
       animation: twinkle 3s ease-in-out infinite;
     }
     /* the envelope lets go of a file and the folder catches one every 1.5s */
-    .scene-envelope :global([data-part='letter']),
-    .scene-envelope :global([data-part='paperclip']) {
-      animation: env-peek 1.5s var(--ease) infinite !important;
+    .scene-envelope :global([data-part~='letter']),
+    .scene-envelope :global([data-part~='paperclip']) {
+      animation: env-peek 1.5s ease-in-out infinite !important;
     }
-    .scene-folder :global([data-part='folder-front']) {
-      transform-box: fill-box;
-      transform-origin: 50% 100%;
-      animation: folder-catch 1.5s var(--ease) infinite;
+    .scene-folder :global([data-part~='folder-front']) {
+      transform-origin: 50% var(--b);
+      animation: folder-catch 1.5s cubic-bezier(0.22, 1, 0.36, 1) infinite;
     }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -154,50 +165,68 @@ const stars = [
 
   @keyframes hippo-walk {
     from {
-      transform: translateY(0) rotate(-1deg);
+      transform: translateY(0) rotate(-0.8deg);
     }
     to {
-      transform: translateY(-3%) rotate(1.2deg);
+      transform: translateY(-2.5%) rotate(1deg);
     }
   }
+  /* same start and end, so files never snap mid-flight */
   @keyframes file-spin {
-    0% {
-      transform: rotate(-12deg) scale(0.8);
+    0%,
+    100% {
+      transform: rotate(-10deg) scale(0.88);
     }
     50% {
-      transform: rotate(8deg) scale(1.1);
+      transform: rotate(8deg) scale(1.08);
     }
-    100% {
-      transform: rotate(-4deg) scale(0.85);
+  }
+  @keyframes shade-breathe {
+    from {
+      transform: scaleX(1);
+      opacity: 1;
+    }
+    to {
+      transform: scaleX(0.9);
+      opacity: 0.7;
     }
   }
   @keyframes twinkle {
     0%,
     100% {
-      transform: scale(0.6) rotate(0deg);
-      opacity: 0.6;
+      transform: scale(0.7);
+      opacity: 0.55;
     }
     50% {
-      transform: scale(1.1) rotate(45deg);
+      transform: scale(1.15);
       opacity: 1;
     }
   }
+  /* starts and ends at rest, so the loop never snaps */
   @keyframes env-peek {
-    0% {
-      transform: translateY(-16%);
-    }
-    30%,
+    0%,
     100% {
+      transform: translateY(0);
+    }
+    24% {
+      transform: translateY(-3.5%);
+    }
+    62% {
       transform: translateY(0);
     }
   }
   @keyframes folder-catch {
     0%,
-    4% {
-      transform: scale(1.05, 0.9);
-    }
-    25%,
     100% {
+      transform: scale(1, 1);
+    }
+    10% {
+      transform: scale(1.03, 0.94);
+    }
+    24% {
+      transform: scale(0.99, 1.015);
+    }
+    40% {
       transform: scale(1, 1);
     }
   }

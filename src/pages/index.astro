@@ -1,9 +1,10 @@
 ---
 import Base from '../layouts/Base.astro';
 import HeroScene from '../components/HeroScene.astro';
-import Illo from '../components/Illo.astro';
+import AuraIcon from '../components/AuraIcon.astro';
 import Marquee from '../components/Marquee.astro';
 import Stamp from '../components/Stamp.astro';
+import ContactForm from '../components/ContactForm.astro';
 import { site } from '../site.config';
 
 const useCases = [
@@ -109,7 +110,7 @@ const jsonLd = [
           useCases.map((uc, i) => (
             <li class="case" data-reveal>
               <div class={`case-art sheet--${uc.tint}`}>
-                <Illo name={uc.icon} class="case-illo" />
+                <AuraIcon name={uc.icon} class="case-illo" />
               </div>
               <div class="meta-row mono">
                 <span>Use case {String(i + 1).padStart(2, '0')}</span>
@@ -137,7 +138,7 @@ const jsonLd = [
           plans.map((p) => (
             <li class="plan" data-reveal>
               <div class="plan-main">
-                <Illo name={p.icon} class="plan-illo" />
+                <AuraIcon name={p.icon} class="plan-illo" />
                 <div>
                   <h3 class="plan-name">{p.name}</h3>
                   <p class="plan-price">
@@ -171,11 +172,13 @@ const jsonLd = [
       </div>
 
       <div class="contact">
-        <Illo name="part-envelope" class="contact-illo" />
-        <div>
+        <div class="contact-side">
           <p class="lead contact-text">We’d love to hear from you! Drop us a line and we’ll get back to you as soon as possible.</p>
+          <AuraIcon name="part-envelope" class="contact-illo" />
+          <p class="mono muted">Prefer email?</p>
           <a class="contact-mail" href={`mailto:${site.email}`}>{site.email}</a>
         </div>
+        <ContactForm />
       </div>
     </div>
   </section>
@@ -323,21 +326,27 @@ const jsonLd = [
   /* ---------- contact ---------- */
   .contact {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
-    gap: 2rem var(--gutter);
-    align-items: center;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: 2.5rem clamp(2rem, 1rem + 4vw, 5rem);
+    align-items: start;
   }
-  .contact :global(.contact-illo) {
-    width: min(100%, 18rem);
+  .contact-side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
   }
   .contact-text {
-    max-width: 30ch;
+    max-width: 28ch;
+  }
+  .contact-side :global(.contact-illo) {
+    width: min(100%, 15rem);
+    margin-block: 0.5rem 1rem;
   }
   .contact-mail {
     display: inline-block;
-    margin-top: 1.5rem;
     font-family: var(--font-display);
-    font-size: clamp(1.75rem, 0.6rem + 4vw, 4.25rem);
+    font-size: clamp(1.5rem, 1rem + 1.6vw, 2.5rem);
     font-weight: 500;
     line-height: 1.05;
     text-decoration: none;
@@ -369,8 +378,8 @@ const jsonLd = [
     .contact {
       grid-template-columns: minmax(0, 1fr);
     }
-    .contact :global(.contact-illo) {
-      width: 10rem;
+    .contact-side :global(.contact-illo) {
+      width: 9rem;
     }
   }
 </style>

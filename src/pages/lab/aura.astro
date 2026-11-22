@@ -1,0 +1,80 @@
+---
+/** Scratch page for illustration experiments. Not linked, not indexed. */
+import Base from '../../layouts/Base.astro';
+import AuraHippo from '../../components/AuraHippo.astro';
+import AuraIcon from '../../components/AuraIcon.astro';
+import { recipes } from '../../lib/aura-recipes';
+
+const names = Object.keys(recipes);
+---
+
+<Base title="Lab — aura illustrations" description="Illustration experiments" noindex>
+  <section class="sheet lab-grey">
+    <div class="wrap">
+      <div class="grid">
+        <div class="cell wide"><AuraHippo /><p class="mono muted">hippo</p></div>
+        {
+          names.map((n) => (
+            <div class="cell">
+              <AuraIcon name={n} />
+              <p class="mono muted">{n}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+  <section class="sheet sheet--mint">
+    <div class="wrap">
+      <div class="grid">
+        {
+          names.map((n) => (
+            <div class="cell">
+              <AuraIcon name={n} />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+  <section class="sheet" id="big">
+    <div class="wrap big">
+      {
+        names.map((n) => (
+          <div class="cell">
+            <AuraIcon name={n} />
+            <p class="mono muted">{n}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+</Base>
+
+<style>
+  .lab-grey {
+    background: #e6e6e6;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2.5rem 2rem;
+    align-items: end;
+  }
+  .cell {
+    display: grid;
+    gap: 0.5rem;
+    justify-items: center;
+    text-align: center;
+  }
+  .big {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4rem 2rem;
+  }
+  .wide {
+    grid-column: 1 / -1;
+    width: min(100%, 36rem);
+    justify-self: center;
+  }
+</style>

@@ -2,6 +2,8 @@
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import ThemeSwitcher from '../components/ThemeSwitcher.astro';
+import { themeCss } from '../lib/themes';
 import { site } from '../site.config';
 
 interface Props {
@@ -39,6 +41,8 @@ const { umamiWebsiteId, gaMeasurementId } = site.analytics;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style is:inline set:html={themeCss(site.defaultTheme)}></style>
+    <script is:inline src="/js/theme.js"></script>
     <title>{title}</title>
     <meta name="description" content={description} />
     {keywords && <meta name="keywords" content={keywords} />}
@@ -83,5 +87,6 @@ const { umamiWebsiteId, gaMeasurementId } = site.analytics;
       <slot />
     </main>
     <Footer />
+    {site.themeSwitcher && <ThemeSwitcher />}
   </body>
 </html>

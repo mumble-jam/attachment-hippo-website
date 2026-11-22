@@ -1,0 +1,220 @@
+---
+/**
+ * Floating colour-theme picker, for comparing options (e.g. on a call).
+ * Picking a theme updates the URL (?theme=…) so the link reproduces it.
+ */
+import { themes } from '../lib/themes';
+import { site } from '../site.config';
+---
+
+<div class="tsw" data-default={site.defaultTheme}>
+  <button class="tsw-toggle" type="button" aria-expanded="false" aria-controls="tsw-panel">
+    <span class="tsw-dots" aria-hidden="true">
+      {themes.map((t) => <span style={`background:${t.swatch[3]}`} />)}
+    </span>
+    <span>Colours</span>
+  </button>
+  <div id="tsw-panel" class="tsw-panel" hidden>
+    <p class="tsw-title">Colour theme</p>
+    <ul role="list">
+      {
+        themes.map((t) => (
+          <li>
+            <button class="tsw-opt" type="button" data-theme-id={t.id} aria-pressed="false">
+              <span class="tsw-swatch" aria-hidden="true">
+                {t.swatch.map((c) => (
+                  <span style={`background:${c}`} />
+                ))}
+              </span>
+              <span class="tsw-text">
+                <span class="tsw-name">{t.name}</span>
+                <span class="tsw-note">{t.note}</span>
+              </span>
+            </button>
+          </li>
+        ))
+      }
+    </ul>
+    <button class="tsw-copy" type="button">Copy link to this theme</button>
+  </div>
+</div>
+
+<script>
+  const root = document.querySelector<HTMLElement>('.tsw');
+  if (root) {
+    const toggle = root.querySelector<HTMLButtonElement>('.tsw-toggle')!;
+    const panel = root.querySelector<HTMLElement>('.tsw-panel')!;
+    const copy = root.querySelector<HTMLButtonElement>('.tsw-copy')!;
+    const def = root.dataset.default ?? '';
+    const current = () => document.documentElement.getAttribute('data-theme') || def;
+
+    const mark = () =>
+      root.querySelectorAll<HTMLButtonElement>('.tsw-opt').forEach((b) => {
+        b.setAttribute('aria-pressed', String(b.dataset.themeId === current()));
+      });
+
+    const apply = (id: string) => {
+      document.documentElement.setAttribute('data-theme', id);
+      try {
+        localStorage.setItem('ah-theme', id);
+      } catch {}
+      const url = new URL(location.href);
+      url.searchParams.set('theme', id);
+      history.replaceState(null, '', url);
+      // keep the theme when moving between pages
+      document.querySelectorAll<HTMLAnchorElement>('a[href^="/"]').forEach((a) => {
+        const u = new URL(a.href, location.origin);
+        u.searchParams.set('theme', id);
+        a.href = u.pathname + u.search + u.hash;
+      });
+      mark();
+    };
+
+    toggle.addEventListener('click', () => {
+      const open = toggle.getAttribute('aria-expanded') !== 'true';
+      toggle.setAttribute('aria-expanded', String(open));
+      panel.hidden = !open;
+    });
+    root.addEventListener('click', (e) => {
+      const opt = (e.target as HTMLElement).closest<HTMLButtonElement>('.tsw-opt');
+      if (opt?.dataset.themeId) apply(opt.dataset.themeId);
+    });
+    copy.addEventListener('click', async () => {
+      const url = new URL(location.href);
+      url.searchParams.set('theme', current());
+      try {
+        await navigator.clipboard.writeText(url.toString());
+        copy.textContent = 'Link copied ✓';
+      } catch {
+        copy.textContent = url.toString();
+      }
+      setTimeout(() => (copy.textContent = 'Copy link to this theme'), 2500);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !panel.hidden) {
+        panel.hidden = true;
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.focus();
+      }
+    });
+    if (document.documentElement.getAttribute('data-theme')) apply(current());
+    mark();
+  }
+</script>
+
+<style>
+  .tsw {
+    position: fixed;
+    left: 1rem;
+    bottom: 1rem;
+    z-index: 80;
+    font-family: var(--font-text);
+  }
+  .tsw-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.5rem 0.875rem 0.5rem 0.625rem;
+    border: 0;
+    border-radius: 999px;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 0.875rem;
+    font-weight: 700;
+    box-shadow: 0 6px 24px rgba(11, 11, 11, 0.18);
+    cursor: pointer;
+  }
+  .tsw-dots {
+    display: flex;
+  }
+  .tsw-dots span {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    border: 2px solid var(--paper);
+    margin-left: -0.35rem;
+  }
+  .tsw-dots span:first-child {
+    margin-left: 0;
+  }
+  .tsw-panel {
+    position: absolute;
+    left: 0;
+    bottom: calc(100% + 0.5rem);
+    width: min(21rem, calc(100vw - 2rem));
+    padding: 0.75rem;
+    border-radius: 1.25rem;
+    background: var(--paper);
+    color: var(--ink);
+    box-shadow: 0 12px 40px rgba(11, 11, 11, 0.22);
+  }
+  .tsw-title {
+    padding: 0.25rem 0.5rem 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .tsw-opt {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.625rem 0.5rem;
+    border: 0;
+    border-radius: 0.875rem;
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+  }
+  .tsw-opt:hover {
+    background: #f2f2f0;
+  }
+  .tsw-opt[aria-pressed='true'] {
+    background: #0b0b0b;
+    color: #fff;
+  }
+  .tsw-swatch {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    flex: none;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.625rem;
+    overflow: hidden;
+  }
+  .tsw-text {
+    display: grid;
+    gap: 0.125rem;
+  }
+  .tsw-name {
+    font-weight: 700;
+    font-size: 0.9375rem;
+  }
+  .tsw-note {
+    font-size: 0.8125rem;
+    opacity: 0.7;
+    line-height: 1.3;
+  }
+  .tsw-copy {
+    width: 100%;
+    margin-top: 0.5rem;
+    padding: 0.625rem;
+    border: 0;
+    border-radius: 0.75rem;
+    background: #f2f2f0;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    cursor: pointer;
+    overflow-wrap: anywhere;
+  }
+  .tsw-copy:hover {
+    background: #e7e7e4;
+  }
+  @media print {
+    .tsw {
+      display: none;
+    }
+  }
+</style>
