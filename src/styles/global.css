@@ -340,7 +340,14 @@ button {
 }
 .stamp-ring {
   position: absolute;
-  inset: 0.5rem;
+  /* explicit size: Safari doesn't stretch an absolutely positioned SVG from
+     `inset` alone and falls back to its default size, spilling the ring text */
+  top: 0.5rem;
+  left: 0.5rem;
+  width: calc(100% - 1rem);
+  height: calc(100% - 1rem);
+  overflow: visible;
+  transform-origin: 50% 50%;
   animation: spin 18s linear infinite;
 }
 .stamp-ring text {
