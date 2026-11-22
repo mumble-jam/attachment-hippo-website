@@ -319,7 +319,7 @@
   display: block;
   width: 3rem;
   height: 4px;
-  background: var(--peach);
+  background: var(--primary);
   margin-bottom: var(--s-3);
 }
 .post-content .pullquote p {
@@ -671,7 +671,7 @@
   grid-column: 2;
   grid-row: 1 / span 3;
   align-self: end;
-  background: var(--peach);
+  background: var(--primary);
   color: var(--ink);
 }
 .post-content .post-cta .btn:hover {

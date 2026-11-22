@@ -1,0 +1,142 @@
+---
+/**
+ * The big email address. Hover/focus shows a "Copy email" label that follows the
+ * pointer; clicking copies the address and confirms with "Copied ✓". If the
+ * clipboard isn't available it falls back to the normal mailto: link.
+ *
+ * The text is sized to its column (container query units) so it always fits on
+ * one line; on very narrow screens it may break only after the "@".
+ */
+interface Props {
+  email: string;
+  /** largest font size, e.g. "2.5rem" */
+  max?: string;
+}
+const { email, max = '2.5rem' } = Astro.props;
+const [user, domain] = email.split('@');
+const hintId = `ce-hint-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<span class="copy-email" style={`--ce-max:${max}`}>
+  <a class="ce-link" href={`mailto:${email}`} data-copy={email} aria-describedby={hintId}>
+    {user}@<wbr />{domain}
+  </a>
+  <span class="ce-tip" aria-hidden="true">Copy email</span>
+  <span class="visually-hidden" id={hintId}>Click to copy the address</span>
+  <span class="visually-hidden ce-live" role="status" aria-live="polite"></span>
+</span>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.copy-email').forEach((root) => {
+    const link = root.querySelector<HTMLAnchorElement>('.ce-link')!;
+    const tip = root.querySelector<HTMLElement>('.ce-tip')!;
+    const live = root.querySelector<HTMLElement>('.ce-live')!;
+    let timer: number | undefined;
+
+    // the label follows the pointer horizontally
+    link.addEventListener('pointermove', (e) => {
+      const r = root.getBoundingClientRect();
+      root.style.setProperty('--x', `${Math.min(Math.max(e.clientX - r.left, 40), r.width - 40)}px`);
+    });
+    link.addEventListener('focus', () => root.style.removeProperty('--x'));
+
+    link.addEventListener('click', async (e) => {
+      if (!navigator.clipboard?.writeText) return; // let mailto: open
+      e.preventDefault();
+      try {
+        await navigator.clipboard.writeText(link.dataset.copy ?? '');
+        tip.textContent = 'Copied ✓';
+        live.textContent = 'Email address copied';
+        root.classList.add('is-copied');
+        clearTimeout(timer);
+        timer = window.setTimeout(() => {
+          root.classList.remove('is-copied');
+          tip.textContent = 'Copy email';
+          live.textContent = '';
+        }, 1800);
+      } catch {
+        window.location.href = link.href;
+      }
+    });
+  });
+</script>
+
+<style>
+  .copy-email {
+    position: relative;
+    display: block;
+    container-type: inline-size;
+  }
+  .ce-link {
+    display: inline;
+    font-family: var(--font-display);
+    /* ~11.5em wide on one line → fits the column */
+    font-size: min(var(--ce-max), 8.6cqi);
+    font-weight: 500;
+    line-height: 1.15;
+    white-space: normal;
+    overflow-wrap: normal;
+    text-decoration: none;
+    background: linear-gradient(var(--primary), var(--primary)) 0 100% / 100% 0.14em no-repeat;
+    transition: background-size 300ms var(--ease);
+    cursor: copy;
+  }
+  .ce-link:hover,
+  .is-copied .ce-link {
+    background-size: 100% 100%;
+  }
+  .ce-link:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 4px;
+  }
+
+  .ce-tip {
+    position: absolute;
+    left: var(--x, 50%);
+    bottom: calc(100% + 0.5rem);
+    translate: -50% 0.25rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition:
+      opacity 180ms var(--ease),
+      translate 180ms var(--ease),
+      background-color 180ms var(--ease);
+  }
+  .ce-tip::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    translate: -50% -50%;
+    width: 0.5rem;
+    height: 0.5rem;
+    background: inherit;
+    rotate: 45deg;
+    border-radius: 1px;
+  }
+  .copy-email:has(.ce-link:hover) .ce-tip,
+  .copy-email:focus-within .ce-tip,
+  .copy-email.is-copied .ce-tip {
+    opacity: 1;
+    translate: -50% 0;
+  }
+  .copy-email.is-copied .ce-tip {
+    background: var(--primary);
+    color: var(--ink);
+  }
+  @media (hover: none) {
+    /* on touch, only show the confirmation */
+    .copy-email:not(.is-copied) .ce-tip {
+      opacity: 0;
+    }
+  }
+</style>

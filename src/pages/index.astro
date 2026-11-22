@@ -85,7 +85,7 @@ const jsonLd = [
 
       <div class="hero-line">
         <span class="mono hero-tag">Gmail™ add-on</span>
-        <Stamp href={site.installUrl} external label="Add to<br>Gmail™" ring="It’s free · It’s free · It’s free ·" />
+        <Stamp href={site.installUrl} external label='Add to<br>Gmail<span class="tm">™</span>' ring="It’s free · It’s free · It’s free ·" />
         <span class="mono hero-tag hero-tag--end">Free to start</span>
       </div>
 
@@ -175,8 +175,6 @@ const jsonLd = [
         <div class="contact-side">
           <p class="lead contact-text">We’d love to hear from you! Drop us a line and we’ll get back to you as soon as possible.</p>
           <AuraIcon name="part-envelope" class="contact-illo" />
-          <p class="mono muted">Prefer email?</p>
-          <a class="contact-mail" href={`mailto:${site.email}`}>{site.email}</a>
         </div>
         <ContactForm />
       </div>
@@ -342,20 +340,6 @@ const jsonLd = [
   .contact-side :global(.contact-illo) {
     width: min(100%, 15rem);
     margin-block: 0.5rem 1rem;
-  }
-  .contact-mail {
-    display: inline-block;
-    font-family: var(--font-display);
-    font-size: clamp(1.5rem, 1rem + 1.6vw, 2.5rem);
-    font-weight: 500;
-    line-height: 1.05;
-    text-decoration: none;
-    overflow-wrap: anywhere;
-    background: linear-gradient(var(--peach), var(--peach)) 0 100% / 100% 0.14em no-repeat;
-    transition: background-size 300ms var(--ease);
-  }
-  .contact-mail:hover {
-    background-size: 100% 100%;
   }
 
   @media (max-width: 760px) {

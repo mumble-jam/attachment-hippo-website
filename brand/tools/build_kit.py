@@ -25,6 +25,7 @@ TEXT_FONT = ROOT / 'node_modules/@fontsource-variable/figtree/files/figtree-lati
 MONO_FONT = ROOT / 'node_modules/@fontsource-variable/chivo-mono/files/chivo-mono-latin-wght-normal.woff2'
 
 # ---------------------------------------------------------------- palette
+PRIMARY = '#FF9CC2'    # Hippo Pink — the primary brand colour (black text on it, never white)
 INK = '#0B0B0B'
 PAPER = '#FFFFFF'
 LAVENDER = '#9B7BDA'   # the hippo. White on it ≥ 3:1 (graphics), black on it ≥ 7:1
@@ -148,14 +149,14 @@ def hippo_art(stroke=16):
     return g
 
 
-def illustrated_icon(size, bg=PEACH):
+def illustrated_icon(size, bg=PRIMARY):
     stroke = 22 if size <= 48 else 16
     rect = f'<rect width="512" height="512" fill="{bg}"/>' if bg else ''
     return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="{size}" height="{size}" role="img" '
             f'aria-label="Attachment Hippo"><title>Attachment Hippo</title>{rect}{hippo_art(stroke)}</svg>\n')
 
 
-def illustrated_banner(w=220, h=140, bg=PEACH):
+def illustrated_banner(w=220, h=140, bg=PRIMARY):
     # the 512 art box, scaled to the banner height and centred
     scale = h / 512 * 1.25
     x = (w - 512 * scale) / 2
@@ -167,8 +168,8 @@ def og_svg():
     """1200×630 social card in the website's style: condensed headline, pastel field, the hippo."""
     w, h, m = 1200, 630, 64
     inner = ('<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">'
-             '<stop offset="0" stop-color="#D3F3F2"/><stop offset=".45" stop-color="#E2F7E8"/>'
-             '<stop offset="1" stop-color="#F3FAD6"/></linearGradient></defs>')
+             '<stop offset="0" stop-color="#E1EDFF"/><stop offset=".5" stop-color="#F1E8FD"/>'
+             '<stop offset="1" stop-color="#FFE3EF"/></linearGradient></defs>')
     inner += f'<rect width="{w}" height="{h}" rx="0" fill="url(#g)"/>'
     inner += (f'<text x="{m}" y="{m + 22}" font-family="Chivo Mono" font-size="20" letter-spacing="1" fill="{INK}">'
               f'ATTACHMENT HIPPO — GMAIL™ ADD-ON</text>')
@@ -176,7 +177,7 @@ def og_svg():
               f'<tspan>Save Gmail™</tspan><tspan x="{m - 3}" dy="96">attachments to</tspan>'
               f'<tspan x="{m - 3}" dy="96">Drive™</tspan><tspan x="{m - 3}" dy="96">automatically</tspan></text>')
     inner += f'<g transform="translate({w - m - 420} {h - m - 440}) scale(0.82)">{hippo_art(16)}</g>'
-    inner += f'<rect x="{m}" y="{h - m - 1}" width="{w - 2 * m}" height="1" fill="{INK}" opacity=".5"/>'
+    inner += f'<rect x="{m}" y="{h - m - 4}" width="{w - 2 * m}" height="4" fill="{PRIMARY}"/>'
     inner += (f'<text x="{m}" y="{h - m - 16}" font-family="Chivo Mono" font-size="18" letter-spacing="1" fill="{INK}">'
               f'ATTACHMENTHIPPO.COM</text>')
     return svg_doc(w, h, inner)
@@ -230,16 +231,17 @@ def main():
     if PNG_DIR.exists(): shutil.rmtree(PNG_DIR)
 
     # --- master SVGs
-    for name, fill in [('black', INK), ('white', PAPER), ('lavender', LAVENDER)]:
+    for name, fill in [('black', INK), ('white', PAPER), ('pink', PRIMARY), ('lavender', LAVENDER)]:
         write(SVG_DIR / f'mark-{name}.svg', mark_svg(fill))
         write(SVG_DIR / f'mark-simple-{name}.svg', mark_svg(fill, simple=True))
     write(SVG_DIR / 'lockup-black.svg', lockup_svg(INK, INK))
     write(SVG_DIR / 'lockup-white.svg', lockup_svg(PAPER, PAPER))
     write(SVG_DIR / 'lockup-lavender.svg', lockup_svg(LAVENDER, INK))
+    write(SVG_DIR / 'lockup-pink.svg', lockup_svg(PRIMARY, INK))
     write(SVG_DIR / 'app-icon.svg', illustrated_icon(512))
     write(SVG_DIR / 'app-icon-transparent.svg', illustrated_icon(512, bg=None))
     write(SVG_DIR / 'app-icon-flat-tile.svg', square_icon(512, LAVENDER, PAPER, 0.78))
-    write(SVG_DIR / 'favicon.svg', square_icon(64, None, LAVENDER, 0.96, simple=True))
+    write(SVG_DIR / 'favicon.svg', square_icon(64, None, PRIMARY, 0.96, simple=True))
 
     # --- Google Workspace Marketplace
     mk = PNG_DIR / 'marketplace'
@@ -254,9 +256,9 @@ def main():
 
     # --- general use
     gen = PNG_DIR / 'general'
-    for name, fill in [('black', INK), ('white', PAPER), ('lavender', LAVENDER)]:
+    for name, fill in [('black', INK), ('white', PAPER), ('pink', PRIMARY), ('lavender', LAVENDER)]:
         render(mark_svg(fill), gen / f'mark-{name}-1024.png', 1024, round(1024 * VB_H / VB_W))
-    for name, (mf, tf) in {'black': (INK, INK), 'white': (PAPER, PAPER), 'lavender': (LAVENDER, INK)}.items():
+    for name, (mf, tf) in {'black': (INK, INK), 'white': (PAPER, PAPER), 'pink': (PRIMARY, INK), 'lavender': (LAVENDER, INK)}.items():
         svg = lockup_svg(mf, tf)
         vb = svg.split('viewBox="0 0 ')[1].split('"')[0].split()
         w = 1600
@@ -271,7 +273,7 @@ def main():
     shutil.copy(gen / 'social-card-1200x630.png', pub / 'og-default.png')
     render(illustrated_icon(180), pub / 'apple-touch-icon.png', 180, 180)
     ico_src = PNG_DIR / 'tmp-ico.png'
-    render(square_icon(64, LAVENDER, PAPER, 0.84, simple=True), ico_src, 64, 64)
+    render(square_icon(64, PRIMARY, INK, 0.84, simple=True), ico_src, 64, 64)
     try:
         from PIL import Image
         Image.open(ico_src).save(pub / 'favicon.ico', sizes=[(16, 16), (32, 32), (48, 48)])

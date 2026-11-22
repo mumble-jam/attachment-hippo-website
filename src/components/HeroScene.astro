@@ -16,10 +16,20 @@ const files = [
   { id: 'mint', a: 'var(--a-mint-top)', b: 'var(--a-mint-core)', begin: '1.5s' },
   { id: 'sky', a: 'var(--a-sky-top)', b: 'var(--a-sky-core)', begin: '3s' },
 ];
+// The route the files travel along (also drawn as the dotted line).
+const route = { p0: [150, 220], p1: [360, -10], p2: [840, -10], p3: [1050, 232] } as const;
+const routeD = `M${route.p0}C${route.p1} ${route.p2} ${route.p3}`;
+/** point on the route at t (0…1) — cubic Bézier */
+const at = (t: number) => {
+  const u = 1 - t;
+  const c = (i: 0 | 1) => u ** 3 * route.p0[i] + 3 * u ** 2 * t * route.p1[i] + 3 * u * t ** 2 * route.p2[i] + t ** 3 * route.p3[i];
+  return { x: +c(0).toFixed(1), y: +c(1).toFixed(1) };
+};
+// glows sit exactly on the line
 const glows = [
-  { x: 330, y: 92, r: 14, d: '0s' },
-  { x: 610, y: 36, r: 10, d: '-1s' },
-  { x: 880, y: 84, r: 12, d: '-2s' },
+  { ...at(0.2), r: 14, d: '0s' },
+  { ...at(0.52), r: 10, d: '-1s' },
+  { ...at(0.8), r: 12, d: '-2s' },
 ];
 ---
 
@@ -30,8 +40,8 @@ const glows = [
       <defs>
         <radialGradient id="glow">
           <stop offset="0" style="stop-color:var(--a-butter-top)"></stop>
-          <stop offset=".45" style="stop-color:var(--peach);stop-opacity:.9"></stop>
-          <stop offset="1" style="stop-color:var(--peach);stop-opacity:0"></stop>
+          <stop offset=".45" style="stop-color:var(--primary);stop-opacity:.9"></stop>
+          <stop offset="1" style="stop-color:var(--primary);stop-opacity:0"></stop>
         </radialGradient>
         <radialGradient id="shade">
           <stop offset="0" stop-color="#28185a" stop-opacity=".22"></stop>
@@ -41,7 +51,7 @@ const glows = [
       <ellipse cx="150" cy="414" rx="118" ry="11" fill="url(#shade)"></ellipse>
       <ellipse class="scene-hippo-shade" cx="600" cy="420" rx="170" ry="12" fill="url(#shade)"></ellipse>
       <ellipse cx="1050" cy="414" rx="118" ry="11" fill="url(#shade)"></ellipse>
-      <path id="route" d="M150 220C360 -10 840 -10 1050 232" stroke="#0b0b0b" stroke-width="2.5" stroke-dasharray="2 12" stroke-linecap="round" opacity=".3"></path>
+      <path id="route" d={routeD} stroke="#0b0b0b" stroke-width="2.5" stroke-dasharray="2 12" stroke-linecap="round" opacity=".3"></path>
       {glows.map((g) => <circle class="scene-glow" style={`animation-delay:${g.d}`} cx={g.x} cy={g.y} r={g.r * 2.2} fill="url(#glow)" />)}
     </svg>
 

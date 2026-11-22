@@ -4,8 +4,8 @@ Two versions of the hippo:
 
 - **The mark** — flat, single colour, for the logo, favicon and anything small or one-colour.
 - **The app icon** — the same hippo outlined in black, lavender fill, a paperclip tucked into its back
-  like a coin in a piggy bank, on a peach tile. Matches the website's illustration style; used for the
-  Google Workspace Marketplace listing.
+  like a coin in a piggy bank, on a Hippo Pink tile. Matches the website's illustration style; used for
+  the Google Workspace Marketplace listing.
 
 The mark is a flat, single-colour hippo traced from the 3D reference render. The eye and nostril
 are **cut out** of the shape (not drawn on top), so every file works in one colour on
@@ -23,7 +23,8 @@ brand/
 │   ├── lockup-black.svg          hippo + “Attachment Hippo” (text outlined, no font needed)
 │   ├── lockup-white.svg
 │   ├── lockup-lavender.svg       lavender hippo + black wordmark
-│   ├── app-icon.svg              outlined hippo + paperclip on peach (Marketplace icon master)
+│   ├── mark-pink.svg / lockup-pink.svg   the hippo in the primary colour
+│   ├── app-icon.svg              outlined hippo + paperclip on Hippo Pink (Marketplace icon master)
 │   ├── app-icon-transparent.svg  same, no background
 │   ├── app-icon-flat-tile.svg    previous flat icon: white hippo on lavender
 │   └── favicon.svg
@@ -39,7 +40,7 @@ brand/
 |---|---|---|
 | Marketplace SDK → Store listing → Graphic assets | Application icon 128 × 128 | `png/marketplace/app-icon-128.png` |
 | Marketplace SDK → Store listing → Graphic assets | Application icon 32 × 32 | `png/marketplace/app-icon-32.png` |
-| Marketplace SDK → Store listing → Graphic assets | Application card banner 220 × 140 | `png/marketplace/card-banner-220x140.png` (peach) or `-mint.png` |
+| Marketplace SDK → Store listing → Graphic assets | Application card banner 220 × 140 | `png/marketplace/card-banner-220x140.png` (Hippo Pink) or `-mint.png` |
 | Google Auth Platform → Branding | App logo 120 × 120 | `png/marketplace/oauth-consent-logo-120.png` |
 | Apps Script `appsscript.json` → `addOns.common.logoUrl` | Icon in Gmail’s side panel | host `png/marketplace/app-icon-transparent-96.png` (or `-128`) on attachmenthippo.com and use its HTTPS URL |
 | Store listing → Screenshots (1280 × 800) | — | **Not included** — capture these from the real add-on in Gmail |
@@ -54,14 +55,20 @@ Notes:
 
 ## Colour
 
+**Primary: Hippo Pink `#FF9CC2`.** Use it as the lead colour for marketing assets (app icon tiles,
+banners, social images, buttons). Text on it is always black (`#0B0B0B`, 10 : 1) — never white
+(1.9 : 1 fails). It's the website's Aurora theme accent, set as `--primary`.
+
 | Name | Hex | Use |
 |---|---|---|
+| **Hippo Pink (primary)** | `#FF9CC2` | Lead brand colour: buttons, icon tiles, banners, highlights. Black text only |
 | Ink | `#0B0B0B` | Text, mono logo |
 | Paper | `#FFFFFF` | Backgrounds, logo on dark/lavender |
 | Hippo Lavender | `#9B7BDA` | The hippo, icon tiles, large fields. White on it passes 3 : 1 (graphics); black text on it passes 7 : 1. **Do not set white body text on it.** |
 | Violet | `#6A4BD0` | Links and accents on white when you need a colour for text (5.9 : 1, WCAG AA) |
 | Mist | `#F1EDFA` | Quiet tinted panels |
-| Peach | `#FFAB7B` | Website accent: buttons (black text), app-icon tile |
+| Aurora gradient | `#E1EDFF` → `#F1E8FD` → `#FFE3EF` | Background fields (sky → lilac → pink), social images |
+| Peach | `#FFAB7B` | Secondary warm accent |
 | Lilac / Mint / Butter / Sky | `#C9B6F2` `#BDEFD8` `#FFE7A3` `#BFE3FF` | Illustration fills |
 
 ## Type

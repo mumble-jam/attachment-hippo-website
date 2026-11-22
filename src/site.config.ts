@@ -41,7 +41,7 @@ export const site = {
    * `themeSwitcher` shows the floating picker for comparing themes — turn it off
    * once you've chosen.
    */
-  defaultTheme: 'pastel',
+  defaultTheme: 'aurora',
   themeSwitcher: true,
 
   /** Analytics only load in production builds (`npm run build`). */

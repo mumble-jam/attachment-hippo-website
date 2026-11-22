@@ -164,23 +164,27 @@ const isCurrent = (href: string) =>
     border-bottom: 1px solid var(--line);
   }
 
+  /* The strip runs under the header's rounded bottom and the first panel's
+     rounded top, so with its own background (Aurora) the corners sit on it too. */
   .announce {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
     gap: 0.25rem 0.75rem;
-    padding: 0.75rem var(--margin);
-    color: var(--band-fg-muted, rgba(255, 255, 255, 0.78));
+    margin-block: calc(-1 * var(--r-sheet));
+    padding: calc(0.75rem + var(--r-sheet)) var(--margin);
+    background: var(--announce-bg, transparent);
+    color: var(--announce-fg, var(--band-fg-muted, rgba(255, 255, 255, 0.78)));
     font-size: 0.8125rem;
     text-align: center;
   }
   .announce a {
-    color: var(--band-fg, var(--paper));
+    color: var(--announce-link, var(--band-fg, var(--paper)));
     font-weight: 700;
     text-decoration: none;
   }
   .announce a:hover {
-    color: var(--peach);
+    color: var(--primary);
   }
 
   @media (max-width: 899px) {

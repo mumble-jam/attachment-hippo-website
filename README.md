@@ -95,8 +95,8 @@ illustration at `/lab/aura/` (not linked, not in the sitemap).
 
 ### Colour themes
 
-`src/lib/themes.ts` defines four themes — **Pastel** (current), **Aurora** (closest to the original
-site: sky → pink → cream on a light page), **Lagoon** (teal, indigo, orange) and **Sunset** (apricot,
+`src/lib/themes.ts` defines four themes — **Aurora** (the default; closest to the original site:
+sky → pink → cream panels on black), **Pastel** (mint, lilac, butter, peach on black), **Lagoon** (teal, indigo, orange) and **Sunset** (apricot,
 rose, plum). Each sets the page and panel colours, the accent, and the colours that light the
 illustrations, so a theme recolours everything.
 
